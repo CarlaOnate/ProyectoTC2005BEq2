@@ -66,6 +66,7 @@ input {
     line-height: 62px;
     text-align: left;
     padding: 0 10px 0 10px;
+    color: #969FAA;
 }
 
 
@@ -97,9 +98,11 @@ input {
 .light-text {
     font-weight: 300;
     color: #969FAA;
-    font-size: 16px;
 }
 
+.bold-text {
+    font-weight: 500;
+}
 
 /*Specific styles*/
 
@@ -166,8 +169,9 @@ input {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    column-gap: 10%;
     /*  Other  */
-    min-height: 80%;
+    min-height: 85%;
 }
 
 #signup > div {
@@ -177,6 +181,11 @@ input {
     align-items: center;
     gap: 10px;
     /* Other */
+}
+
+#signup > div:first-child {
+    width: 40%;
+    justify-self: center;
 }
 
 #signup > div:nth-child(2) {
