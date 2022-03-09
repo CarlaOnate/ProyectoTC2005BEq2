@@ -55,7 +55,23 @@ button {
     touch-action: manipulation;
 }
 
-.secondary-button {
+input {
+    background-color: #FFFFFF;
+    border: 1px solid #2A9D8F;
+    border-radius: 5px;
+    width: 20vw;
+    height: 30px;
+    color: #8190A5;
+    font-size: 12px;
+    line-height: 62px;
+    text-align: left;
+    padding: 0 10px 0 10px;
+}
+
+
+/* General classes */
+
+.button-small {
     font-size: 12px;
     height: 30px;
     line-height: 15px;
@@ -140,3 +156,41 @@ button {
     gap: 10px;
 }
 
+
+
+/* Sign up page */
+
+#signup {
+    /* Flex */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    /*  Other  */
+    min-height: 80%;
+}
+
+#signup > div {
+    /* all divs recursively */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    /* Other */
+}
+
+#signup > div:nth-child(2) {
+    /* Div containing the form */
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 30px 5vw;
+}
+
+#signup > div:nth-child(2) div {
+    /*  Div of each individual input  */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 10px;
+}
