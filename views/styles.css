@@ -66,10 +66,16 @@ button {
      color: #FFFFFF;
 }
 
-.button-outline {
+.button-outline-orange {
     background-color: white;
     border: solid 1px #E76F51;
     color: #E76F51;
+}
+
+.button-outline-white {
+    background-color: transparent;
+    border: solid 1px #FFFFFF;
+    color: #FFFFFF;
 }
 
 .light-text {
@@ -77,6 +83,7 @@ button {
     color: #969FAA;
     font-size: 16px;
 }
+
 
 /*Specific styles*/
 
