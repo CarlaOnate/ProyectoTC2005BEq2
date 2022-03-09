@@ -7,26 +7,76 @@ html {
     height: 100%;
 }
 
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    height: 100%;
+}
+
+
 p {
     margin: 5px;
 }
 
-h1 {}
+h1 {
+    font-size: 25px;
+}
 
 h2 {
     font-size: 22px;
 }
 
-h3 {}
-
-button {}
-
-body {
-    font-family: 'Lato', sans-serif;
-    font-size: 15px;
-    height: 100%;
+h3 {
+    font-size: 19px;
 }
 
+button {
+    border-radius: 8px;
+    border-style: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    height: 35px;
+    line-height: 20px;
+    list-style: none;
+    margin: 5px;
+    outline: none;
+    padding: 5px 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition: color 100ms;
+    vertical-align: baseline;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.secondary-button {
+    font-size: 12px;
+    height: 30px;
+    line-height: 15px;
+}
+
+.button-filled {
+     background-color: #E76F51;
+     color: #FFFFFF;
+}
+
+.button-outline {
+    background-color: white;
+    border: solid 1px #E76F51;
+    color: #E76F51;
+}
+
+.light-text {
+    font-weight: 300;
+    color: #969FAA;
+    font-size: 16px;
+}
 
 /*Specific styles*/
 
@@ -52,6 +102,8 @@ body {
     gap: 20px;
 }
 
+/*Thank you page -> after sign up*/
+
 #thankyou {
     /* Flex */
     display: flex;
@@ -63,13 +115,21 @@ body {
 }
 
 #thankyou > div {
+    /* Flex */
+    display: flex;
+    flex-direction: column;
+    column-gap: 20px;
     /* Immediate first two divs  */
     width: 50%;
-    margin: 30px;
 }
 
 #thankyou div {
     /* All divs recursively inside thankyou */
+    /* Other */
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
 }
 
