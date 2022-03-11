@@ -213,8 +213,9 @@ input {
 }
 
 /* Dashboard */
-#avatar img {
+.navbar-imgs {
     height: 30px;
+    margin-right: 50px;
 }
 
 #dashboard {
