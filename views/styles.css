@@ -220,40 +220,46 @@ input {
 #dashboard {
     display: flex;
     flex-direction: column;
+    padding: 0 100px 0 100px;
 }
 
 #dashboard > div h2 {
+    /* Header */
     text-align: center;
 }
 
-#dashboard > div:nth-child(2) {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 50px 0 50px;
-}
-
 #dashboard > div {
-    padding: 0 50px 0 50px;
+    /* Each div inside dashboard - one level down */
     margin: 30px 0 0 0;
 }
 
+#dashboard > div:nth-child(2) {
+    /* Div with username and button */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 #dashboard > div:nth-child(3) div {
+    /* div below personal data */
     display: flex;
     flex-direction: row;
 }
 
 #dashboard > div:nth-child(3) > div > div {
+    /* Each div with profile info (Email, country ...)*/
     display: flex;
     flex-direction: column;
     margin-right: 50px;
 }
 
 #dashboard > div:nth-child(3) > div p:first-child {
+    /* Bolded text in last div */
     margin-right: 20px;
 }
 
 #dashboard > div:nth-child(3) > div p:nth-child(2) {
+    /* Profile data text in last div */
     margin-right: 50px;
 }
 
