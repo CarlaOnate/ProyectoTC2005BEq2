@@ -104,6 +104,11 @@ input {
     font-weight: 500;
 }
 
+.highlight {
+    color: #2A9D8F;
+    font-weight: 500;
+}
+
 /*Specific styles*/
 
 #navbar {
@@ -128,6 +133,8 @@ input {
     gap: 20px;
 }
 
+
+
 /*Thank you page -> after sign up*/
 
 #thankyou {
@@ -140,7 +147,7 @@ input {
     min-height: 80%;
 }
 
-#thankyou > div {
+#thankyou > div {  /* styles apply only to children one level below parent*/
     /* Flex */
     display: flex;
     flex-direction: column;
@@ -184,6 +191,7 @@ input {
 }
 
 #signup > div:first-child {
+    /* Title div */
     width: 40%;
     justify-self: center;
 }
@@ -203,3 +211,50 @@ input {
     justify-content: start;
     gap: 10px;
 }
+
+/* Dashboard */
+#avatar img {
+    height: 30px;
+}
+
+#dashboard {
+    display: flex;
+    flex-direction: column;
+}
+
+#dashboard > div h2 {
+    text-align: center;
+}
+
+#dashboard > div:nth-child(2) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 50px 0 50px;
+}
+
+#dashboard > div {
+    padding: 0 50px 0 50px;
+    margin: 30px 0 0 0;
+}
+
+#dashboard > div:nth-child(3) div {
+    display: flex;
+    flex-direction: row;
+}
+
+#dashboard > div:nth-child(3) > div > div {
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+}
+
+#dashboard > div:nth-child(3) > div p:first-child {
+    margin-right: 20px;
+}
+
+#dashboard > div:nth-child(3) > div p:nth-child(2) {
+    margin-right: 50px;
+}
+
+
