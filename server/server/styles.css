@@ -1,0 +1,496 @@
+<<<<<<< Updated upstream
+=======
+/*General styles*/
+* {
+    margin: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    height: 100%;
+    margin: 0px;
+}
+
+
+p {
+    margin: 5px;
+}
+
+h1 {
+    font-size: 25px;
+}
+
+h2 {
+    font-size: 22px;
+}
+
+h3 {
+    font-size: 19px;
+}
+
+button {
+    border-radius: 8px;
+    border-style: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    height: 35px;
+    line-height: 20px;
+    list-style: none;
+    margin: 5px;
+    outline: none;
+    padding: 5px 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition: color 100ms;
+    vertical-align: baseline;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+input {
+    background-color: #FFFFFF;
+    border: 1px solid #2A9D8F;
+    border-radius: 5px;
+    width: 20vw;
+    height: 30px;
+    color: #8190A5;
+    font-size: 12px;
+    line-height: 62px;
+    text-align: left;
+    padding: 0 10px 0 10px;
+    color: #969FAA;
+}
+
+
+/* General classes */
+
+.button-small {
+    font-size: 12px;
+    height: 30px;
+    line-height: 15px;
+}
+
+.button-filled {
+     background-color: #E76F51;
+     color: #FFFFFF;
+}
+
+.button-outline-orange {
+    background-color: white;
+    border: solid 1px #E76F51;
+    color: #E76F51;
+}
+
+.button-outline-white {
+    background-color: transparent;
+    border: solid 1px #FFFFFF;
+    color: #FFFFFF;
+}
+
+.light-text {
+    font-weight: 300;
+    color: #969FAA;
+}
+
+.bold-text {
+    font-weight: 500;
+}
+
+.highlight {
+    color: #2A9D8F;
+    font-weight: 500;
+}
+
+/*Specific styles*/
+
+#navbar {
+    /* Fonts */
+    font-family: 'Fira Mono', monospace;
+    font-size: 15px;
+    /* Flex */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    /* Other */
+    background-color: #F5F5F5;
+    padding: 10px;
+    height: 30px;
+}
+
+#navbar div:nth-child(2){
+    /*Nav bar menu*/
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+
+
+/*Thank you page -> after sign up*/
+
+#thankyou {
+    /* Flex */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    /*  Other  */
+    min-height: 80%;
+}
+
+#thankyou > div {  /* styles apply only to children one level below parent*/
+    /* Flex */
+    display: flex;
+    flex-direction: column;
+    column-gap: 20px;
+    /* Immediate first two divs  */
+    width: 50%;
+}
+
+#thankyou div {
+    /* All divs recursively inside thankyou */
+    /* Other */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+
+
+/* Sign up page */
+
+#signup {
+    /* Flex */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    column-gap: 10%;
+    /*  Other  */
+    min-height: 85%;
+}
+
+#signup > div {
+    /* all divs recursively */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    /* Other */
+}
+
+#signup > div:first-child {
+    /* Title div */
+    width: 40%;
+    justify-self: center;
+}
+
+#signup > div:nth-child(2) {
+    /* Div containing the form */
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    gap: 30px 5vw;
+}
+
+#signup > div:nth-child(2) div {
+    /*  Div of each individual input  */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 10px;
+}
+
+/* Dashboard */
+.navbar-imgs {
+    height: 30px;
+    margin-right: 50px;
+}
+
+#dashboard {
+    display: flex;
+    flex-direction: column;
+    padding: 0 100px 0 100px;
+}
+
+#dashboard > div h2 {
+    /* Header */
+    text-align: center;
+}
+
+#dashboard > div {
+    /* Each div inside dashboard - one level down */
+    margin: 30px 0 0 0;
+}
+
+#dashboard > div:nth-child(2) {
+    /* Div with username and button */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#dashboard > div:nth-child(3) div {
+    /* div below personal data */
+    display: flex;
+    flex-direction: row;
+}
+
+#dashboard > div:nth-child(3) > div > div {
+    /* Each div with profile info (Email, country ...)*/
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+}
+
+#dashboard > div:nth-child(3) > div p:first-child {
+    /* Bolded text in last div */
+    margin-right: 20px;
+}
+
+#dashboard > div:nth-child(3) > div p:nth-child(2) {
+    /* Profile data text in last div */
+    margin-right: 50px;
+}
+
+
+/* Download page */
+#download_main{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: solid #18ab95 12px;
+    padding-top: 3rem;
+    padding-bottom: 5rem;
+    padding-right: 4rem;
+    padding-left: 4rem;
+    align-items: center;
+    column-gap: 50px;
+}
+
+#download_main > img{
+    width: 50%;
+}
+
+#dl_info{
+    display: flex;
+    row-gap: 15px;
+    flex-direction: column;
+    text-align: justify;
+    flex-shrink: 1;
+}
+
+#dl_info > div{
+    display: flex;
+    justify-content: flex-end;
+
+}
+
+#dl_info > p{
+    font-size: 25px;
+}
+
+#dl_info > h1{
+    font-size: 40px;
+}
+
+#how2_play{
+    display: flex;
+    flex-direction: column;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    padding-right: 111px;
+    padding-left: 111px;
+}
+
+#how2_play p{
+    font-size: 25px;
+}
+
+#how2_play  h1{
+    font-size: 45px;
+    text-align: center;
+}
+
+#how2_play h2{
+    text-align: center;
+    font-size: 35px;
+}
+
+#move{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 80px;
+    margin-bottom: 5rem;
+}
+
+#move > img{
+    width: 40%;
+    height: 40%;
+}
+
+#move_inst{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 20px;
+    flex-shrink: 1;
+    width: 50%;
+}
+
+#move_inst > img{
+    width: 50%;
+    margin: 0 auto;
+}
+
+#to_hit{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 80px;
+    margin-bottom: 5rem;
+}
+
+#to_hit > img{
+    width: 35%;
+    height: 35%;
+}
+
+#hit_inst{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 80px;
+    flex-shrink: 1;
+    width: 50%;
+}
+
+#hit_inst > img{
+    width: 20%;
+    margin: 0 auto;
+}
+
+#instruments{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 80px;
+    margin-bottom: 5rem;
+}
+
+#instruments > img{
+    width: 40%;
+    height: 40%;
+}
+
+#inst_inst{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 80px;
+    flex-shrink: 1;
+    width: 50%;
+}
+
+#inst_inst > img{
+    width: 50%;
+    margin: 0 auto;
+}
+
+#gpNtime{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 80px;
+    margin-bottom: 5rem;
+}
+
+#gpNtime_inst{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 20px;
+    flex-shrink: 1;
+    width: 50%;
+}
+
+#gpNtime > iframe{
+    margin: auto;
+}
+
+/* Stats page */
+
+#stats{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 5rem;
+    padding-right: 100px;
+    padding-left: 100px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+    row-gap: 50px;
+}
+
+#stats p{
+    font-size: 26px;
+}
+
+#stats h1{
+    font-size: 40px;
+}
+
+#stats h2{
+    font-size: 28px;
+    text-align: center;
+}
+
+#stat_description{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+#graphs{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+    row-gap: 100px;
+    width: 100%;
+}
+
+.stat_pair{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10%;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.gpWtitle{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 40%;
+<<<<<<< Updated upstream
+}
+>>>>>>> Stashed changes
+=======
+}
+>>>>>>> Stashed changes
