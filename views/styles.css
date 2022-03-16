@@ -132,14 +132,32 @@ input {
     height: 30px;
 }
 
-#navbar div:nth-child(2){
+#navbar > div:nth-child(2){
     /*Nav bar menu*/
     display: flex;
     justify-content: space-around;
     gap: 20px;
 }
 
+#navbar > div:nth-child(2) > div {
+    /*Nav bar drum div*/
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
 
+.navbar-imgs {
+    height: 30px;
+}
+
+#sign-out {
+    visibility: hidden;
+    background-color: #F5F5F5;
+    padding: 10px;
+    height: 30px;
+}
 
 /*Thank you page -> after sign up*/
 
@@ -219,11 +237,6 @@ input {
 }
 
 /* Dashboard */
-.navbar-imgs {
-    height: 30px;
-    margin-right: 50px;
-}
-
 #dashboard {
     display: flex;
     flex-direction: column;

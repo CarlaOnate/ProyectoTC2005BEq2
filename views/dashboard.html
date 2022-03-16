@@ -5,9 +5,11 @@
     <title>Drummy's Adventures</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"></head>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="./assets/drummy.png"/>
     <link rel="stylesheet" href="styles.css">
+    <script src="../js/index.js" type="text/javascript"></script>
+</head>
 <body>
 <div id="navbar">
     <div>
@@ -17,7 +19,12 @@
         <p><a href="thankyou.html">Download</a></p>
         <p><a href="stats.html">My stats</a></p>
         <p><a href="dashboard.html">Profile</a></p>
-        <img id="navbar-imgs" src="assets/drum.png"/>
+        <div onclick="showSignOutButton()">
+            <img class="navbar-imgs" src="assets/drum.png"/>
+            <div id="sign-out">
+                <a href="download.html">Sign-out</a>
+            </div>
+        </div>
     </div>
 </div>
 <section id="dashboard">
