@@ -89,6 +89,11 @@ input {
      color: #FFFFFF;
 }
 
+.button-filled-green {
+    background-color: green;
+    color: #FFFFFF;
+}
+
 .button-outline-orange {
     background-color: white;
     border: solid 1px #E76F51;
@@ -258,6 +263,11 @@ input {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+#username > div:first-child {
+    display: flex;
+    flex-direction: row;
 }
 
 #dashboard > div:nth-child(3) div {
