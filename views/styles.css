@@ -515,3 +515,17 @@ input {
     row-gap: 20px;
     width: 40%;
 }
+
+/* Download logged */
+#download-logged {
+    padding-top: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    text-align: center;
+}
+
+#download-logged > div {
+    margin-top: 15%;
+}
