@@ -5,7 +5,6 @@
 
 a {
     text-decoration: none;
-    color: #E76F51;
 }
 
 html {
@@ -76,6 +75,18 @@ input {
 
 
 /* General classes */
+
+.white {
+    color: #FFFFFF;
+}
+
+.orange {
+    color: #E76F51;
+}
+
+.black {
+    color: #343F4B;
+}
 
 .button-small {
     font-size: 12px;
