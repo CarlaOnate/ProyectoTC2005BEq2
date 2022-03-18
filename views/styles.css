@@ -952,3 +952,10 @@ input {
 #download-logged > div {
     margin-top: 15%;
 }
+
+/* Login page*/
+#login-button {
+  background-color: #E76F51;
+  border: solid 1px #E76F51;
+  color: white;
+}
