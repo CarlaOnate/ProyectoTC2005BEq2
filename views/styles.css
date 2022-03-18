@@ -17,7 +17,6 @@ body {
     font-size: 15px;
     font-weight: 300;
     height: 100%;
-    margin: 0px;
 }
 
 
@@ -72,6 +71,7 @@ input {
     line-height: 62px;
     text-align: left;
     padding: 0 10px 0 10px;
+    color: #969FAA;
 }
 
 
@@ -142,6 +142,7 @@ input {
     justify-content: space-around;
     gap: 20px;
 }
+
 /* Front Page*/
 
 #banner, #our-goal, #banner1, #see-stats {
@@ -430,6 +431,7 @@ input {
 
 #footer-main .footer-main-top h2 {
   color: #FFFFFF;
+  font-family: Lato;
   font-size: 1.3vw;
   font-weight: 100;
   text-align: left;
@@ -502,6 +504,7 @@ input {
 }
 
 #about-us .box-bottom {
+  margin-top: -50%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -529,8 +532,8 @@ input {
 }
 
 #about-us .box-bottom .pp-container {
-  margin: 0px auto;
-  width: 100%;
+  margin:0px auto;
+  widht: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -564,7 +567,6 @@ input {
 
 }
 
->>>>>>> Stashed changes
 #navbar > div:nth-child(2) > div {
     /*Nav bar drum div*/
     text-align: center;
