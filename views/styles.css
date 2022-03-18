@@ -72,7 +72,6 @@ input {
     line-height: 62px;
     text-align: left;
     padding: 0 10px 0 10px;
-    color: #969FAA;
 }
 
 
@@ -143,7 +142,429 @@ input {
     justify-content: space-around;
     gap: 20px;
 }
+/* Front Page*/
 
+#banner, #our-goal, #banner1, #see-stats {
+  height: 100vh;
+  widht: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Imagen Banner */
+
+#banner > div {
+  min-height: 110vh;
+  min-widht:  100vw;
+}
+
+#controller {
+  /* Position & Size */
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+}
+
+#banner  .text-box {
+  height: 75vh;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#banner  .banner-container .text-box h1 {
+  color: #264653;
+  font-family: 'Roboto Slab', serif;
+  font-size: 6vw;
+  margin-top: 3%;
+}
+
+#banner  .banner-container .text-box  h2 {
+  color: #5A6978;
+  position: relative;
+  margin-top: 27%;
+  margin-bottom: 3%;
+  font-size: 2vw;
+}
+
+  /* Seccion Our Goal */
+#our-goal > div {
+  position: relative;
+  min-height: 100vh;
+  min-widht:  100vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#our-goal > div h1 {
+  color: #264653;
+  font-family: 'Roboto Slab', serif;
+  font-size: 4vw;
+  margin-top: 3%;
+  margin-bottom: 3%;
+  font-weight: 500;
+}
+
+#our-goal > div p {
+  color: #5A6978;
+  font-family: 'Roboto Slab', serif;
+  font-size: 1.3vw;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-bottom: 3%;
+}
+
+#our-goal > div .box {
+  display: flex;
+  flex-basis: auto;
+  height: 30vh;
+  widht: 100vw;
+}
+
+#our-goal > div .box > div {
+  background-color: rgba(233, 196, 106, 0.16);
+  box-shadow: 0 35px 55px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  margin: 2%;
+  font-size: 2vw;
+  flex-basis: auto;
+  height: 300px;
+  widht: 500px;
+  overflow: hidden;
+  margin-bottom: 3%;
+}
+
+#our-goal > div .box > div h3 {
+  font-size: 2vw;
+  font-family: Roboto Slab;
+  font-weight: 500;
+  color: #264653;
+  margin-top: 5%;
+}
+
+#our-goal > div .box > div p {
+  font-size: 1.3vw;
+  text-align: justify;
+  text-justify: inter-word;
+  color: #343F4B;
+  margin: 7%;
+}
+
+#banner1 {
+  background-color: rgba(239, 91, 53, 0.77);
+  position: relative;
+  min-height: 100vh;
+  min-widht:  100vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#banner1 .boxes {
+  background-color: rgba(239, 91, 53, 0.77);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#banner1 .boxes .sub-box {
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  height: 75%;
+}
+
+#banner1 .boxes .sub-box .image-container{
+  background-color: #E5E9F2;
+  border-radius: 35px;
+  width: 378px;
+  height: 240px;
+  box-shadow: 0 35px 55px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  vertical-align: center;
+  margin-top: 3%;
+}
+
+#banner1 .boxes .sub-box .image-container img {
+  width: 70%;
+  margin: 5%;
+  border-radius: 10%;
+}
+
+#banner1 .sub-box h2 {
+  color: white;
+  /*font-size: 2vw;*/
+  font-size: 28px;
+  text-align: left;
+  margin-left: 3%;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+
+#banner1 .sub-box p {
+  color: white;
+  /*font-size: 1.3vw;*/
+  font-size: 18px;
+  line-height: 30px;
+  text-align: justify;
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+/* Seccion See the stats */
+
+#see-stats .container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#see-stats .container .left-container {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+#see-stats .container .left-container h1 {
+  color: #264653;
+  font-family: Roboto Slab;
+  font-size: 40px;
+  text-align: left;
+  margin-top: 5%;
+  margin-left: 5%;
+}
+
+#see-stats .container .left-container h2 {
+  color: #264653;
+  font-family: Lato;
+  font-size: 26px;
+  text-align: left;
+  margin-top: 2.5%;
+  margin-left: 5%;
+}
+
+#see-stats .container .left-container p {
+  color: #5A6978;
+  font-family: Lato;
+  font-size: 26px;
+  text-align: left;
+  margin-top: 2.5%;
+  margin-left: 5%;
+  margin-bottom: 7%;
+}
+
+#see-stats .container .left-container .scores-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#see-stats .container .left-container .scores-container .see-scores {
+  background-color: rgba(42, 157, 143, 0.23);
+  width: 218px;
+  height: 332px;
+  text-align: center;
+}
+
+#see-stats .container .left-container .scores-container .see-scores h3 {
+  color: #343F4B;
+  font-family: Lato;
+  font-size: 28px;
+  margin-top: 38%;
+  margin-bottom: 7%;
+}
+
+#see-stats .container .left-container .scores-container .see-scores img{
+  width: 95px;
+  height: 95px;
+}
+
+#stats-example {
+  text-align: center;
+  margin: 5%;
+  widht: 90%;
+}
+
+/*Footer Main Page*/
+#footer-main {
+  height: 30vh;
+  width: 100%;
+}
+
+#footer-main .footer-main-top {
+  width: 100%;
+  height: 60%;
+  background-color: rgba(38, 70, 83, 0.76);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: -5%;
+}
+
+#footer-main .text-box {
+  margin: 1.2%;
+}
+
+#footer-main .footer-main-top h1{
+  color: #FFFFFF;
+  font-family: Roboto Slab;
+  font-size: 1.9vw;
+  text-align: left;
+  margin-left: 3%;
+  margin-top: 3%;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+#footer-main .footer-main-top h2 {
+  color: #FFFFFF;
+  font-size: 1.3vw;
+  font-weight: 100;
+  text-align: left;
+  margin-left: 3%;
+  vertical-align: middle;
+  margin-top: 1%;
+}
+
+#footer-main .footer-main-top img {
+  margin: 1%;
+  margin-right: 3%;
+  widht: 90px;
+  height: 90px;
+}
+
+#footer-main .footer-main-top button {
+  margin-top: 2.5%;
+  background-color: rgba(255, 255, 255, 0);
+  border: 2px solid #FFFFFF;
+  border-radius: 5px;
+  width: 15%;
+  height: 40%;
+  color: white;
+  font-size: 1.15vw;
+  white-space: nowrap;
+}
+
+#footer-main .footer-main-bottom {
+  width: 100%;
+  height: 40%;
+  background-color: rgba(239, 91, 53, 0.83);
+}
+
+/*About Us Page -> after sign up*/
+#about-us .box-about-us {
+  width: 100%;
+  height: 135vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#about-us .box-top {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 5%;
+}
+
+#about-us .box-top .text-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+#about-us .box-top .text-container h2 {
+  font-size: 2vw;
+  margin-bottom: 2%;
+  margin-left: 0.5%;
+}
+
+#about-us .box-top .text-container p {
+  font-size: 1.3vw;
+  text-align: justify;
+}
+
+#about-us .box-top img {
+  width: 30vw;
+}
+
+#about-us .box-bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 5%;
+  text-align: center;
+}
+
+#about-us .box-bottom .text-container {
+  text-align: left;
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  margin-left: 5%;
+}
+
+#about-us .box-bottom .text-container h2 {
+  font-size: 2vw;
+  margin-bottom: 2%;
+  margin-left: 0.5%;
+}
+
+#about-us .box-bottom .text-container p {
+  font-size: 1.3vw;
+}
+
+#about-us .box-bottom .pp-container {
+  margin: 0px auto;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 20%;
+  margin-top: 5%;
+}
+
+#about-us .box-bottom .pp-container .pp-container0 {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-around;
+}
+
+#about-us .box-bottom .pp-container .pp-container0 p {
+  font-size: 1.3vw;
+  text-align: center;
+  margin-bottom: 2%;
+  white-space: nowrap;
+}
+
+#about-us .box-bottom .pp-container .pp-container0 img {
+  min-width: 100px;
+  max-width: 150px;
+  margin:0px auto;
+}
+
+#about-us-footer {
+  height: 20vh;
+  width: 10vw;
+
+}
+
+>>>>>>> Stashed changes
 #navbar > div:nth-child(2) > div {
     /*Nav bar drum div*/
     text-align: center;
