@@ -10,24 +10,27 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <div id="navbar">
-            <div>
-                <a href="../index.html"><img class="navbar-imgs" src="assets/drummy.png"/></a>
-            </div>
-            <div>
-                <p><a href="../index.html" class="black">Home</a></p>
-                <p><a href="download.html" class="black">Download</a></p>
-                <p><a href="stats.html" class="orange">Stats</a></p>
-                <p><a href="aboutus.html" class="black">About us</a></p>
-                <p><a href="login.html" class="black">Login</a></p>
-                <img id="navbar-imgs" src="assets/drum.png"/>
+    <div id="navbar">
+        <div>
+            <a href="../index.html"><img class="navbar-imgs" src="assets/drummy.png"/></a>
+        </div>
+        <div>
+            <p><a href="../index.html" class="black">Home</a></p>
+            <p><a href="download-logged.html" class="black">Download</a></p>
+            <p><a href="my-stats.html" class="orange">My stats</a></p>
+            <p><a href="dashboard.html" class="black">Profile</a></p>
+            <div onclick="showSignOutButton()">
+                <img class="navbar-imgs" src="assets/drum.png"/>
+                <div id="sign-out">
+                    <a href="download.html">Sign-out</a>
+                </div>
             </div>
         </div>
+    </div>
 
         <section id="stats">
             <div id="stat_description">
-                <h1>Stats</h1>
-                <p>In this section you'll find the global stats for the game and the website. To see personal stats you'll have to login and see the my stats section.</p>
+                <h1>Personal Stats</h1>
             </div>
             <div id="graphs">
                 
@@ -42,8 +45,7 @@
                 </div>
 
                 <div class="stat_pair">
-                    <div class="gpWtitle"><h2>Website visits</h2><img src="assets/stat5.png"></div>
-                    <div class="gpWtitle"><h2>Downloads by country</h2><img src="assets/stat6.png"></div>
+                    <div class="gpWtitle"><h2>Session times</h2><img src="assets/stat7.png"></div>
                 </div>
 
             </div>
