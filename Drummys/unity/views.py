@@ -16,14 +16,11 @@ def modelo(req):
     password = req.POST["password"]
     country = req.POST["country"]
 
-    country = Countries.objects.get(nickname="MX")
+    print('\n\ncountry_id =>', country, '\n\n')
 
-    print('\n\ncountry_id =>', country.nickname, '\n\n')
+    user = User.objects.create(username=username, age=age, password=password, country_id=country)
 
-    user = User(username=username, age=age, password=password, country_id=country)
-
-    print('\n\nuser', user, '\n\n')
-
-    user.save()
+    print('\n\nuser', user.username, user.age, user.password, user.country_id, '\n\n')
 
     return JsonResponse({"msg": 200})
+
