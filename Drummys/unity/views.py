@@ -90,3 +90,23 @@ def sessions(request):
             lista_salida.append(d)
         j = dumps(lista_salida)
     return HttpResponse(j, content_type="text/json-comment-filtered")
+
+def visits(request):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT Visit.id, Visit.ip, Visit.device, Visit.dateCreated FROM Visit LIMIT 10'''
+    rows = cur.execute(stringSQL)
+    if rows is None:
+        raise Http404("user_id does not exist")
+    else:
+        lista_salida = []
+        for r in rows:
+            print(r)
+            d = {}
+            d["visit_id"] = r[0]
+            d["ip"] = r[1]
+            d["device"] = r[2]
+            d["dateCreated"] = r[3]
+            lista_salida.append(d)
+        j = dumps(lista_salida)
+    return HttpResponse(j, content_type="text/json-comment-filtered")
