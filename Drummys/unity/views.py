@@ -68,3 +68,49 @@ def login(req):
                 "id": session[0][0]
             }
         }], safe=False)
+
+@csrf_exempt
+def updateUser(req):
+    id = req.POST["id"]
+    username = req.POST["username"]
+    # User needs to be logged in -> missing logic
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    updateUserSql = '''UPDATE User SET username = ? WHERE id=?;'''
+    cur.execute(updateUserSql, (username, id))
+    mydb.commit()
+
+    return JsonResponse({"msg": 200})
+
+@csrf_exempt
+def registerLevel1(req):
+    userId = req.POST["user_id"]
+    difficulty = req.POST["difficulty"]
+    playedAudio = req.POST["played_audio"]
+    finalTime = req.POST["final_time"]
+    penalties = req.POST["penalties"]
+
+    #Since it's first level we need to create the party
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    dateCreated = datetime.datetime.now()
+
+#Find Session if we don't have end date for each session
+    findSessionSql_1 = '''SELECT id FROM Session WHERE user_id=? order by dateCreated DESC limit 1'''
+    #Find Session if we have end date for each session
+    findSessionSql_2 = '''SELECT id FROM Session WHERE user_id=? AND date is NULL order by dateCreated DESC'''
+    sessionId = cur.execute(findSessionSql_2, (userId)).fetchall()[0][0]
+
+    createPartySql = '''INSERT INTO Party (USER_ID, SESSION_ID, DATECREATED) VALUES (?, ?, ?)'''
+    cur.execute(createPartySql, (userId, sessionId, dateCreated))
+
+    findPartySql = '''SELECT id FROM Party WHERE user_id=? AND session_id=? order by dateCreated DESC'''
+    partyId = cur.execute(findPartySql, (userId, sessionId)).fetchall()[0][0]
+
+    createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    cur.execute(createLevel1Sql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
+    mydb.commit()
+
+    return JsonResponse({"msg": 200})
+
