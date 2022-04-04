@@ -68,3 +68,25 @@ LIMIT 10'''
         j = dumps(lista_salida)
     return HttpResponse(j, content_type="text/json-comment-filtered")
 
+
+def sessions(request):
+    usuario = request.GET['user_id']
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT Session.id as Session_id, Session.user_id, Session.time_played, Session.dateCreated FROM  Session
+  WHERE Session.user_id = ?  ORDER BY Session.time_played  LIMIT 10'''
+    rows = cur.execute(stringSQL, (usuario,))
+    if rows is None:
+        raise Http404("user_id does not exist")
+    else:
+        lista_salida = []
+        for r in rows:
+            print(r)
+            d = {}
+            d["session_id"] = r[0]
+            d["user_id"] = r[1]
+            d["time_played"] = r[2]
+            d["dateCreated"] = r[3]
+            lista_salida.append(d)
+        j = dumps(lista_salida)
+    return HttpResponse(j, content_type="text/json-comment-filtered")
