@@ -49,7 +49,7 @@ Countries.id = User.country_id WHERE Levels.user_id = ?  AND Levels.difficulty= 
 LIMIT 10'''
     rows = cur.execute(stringSQL, (usuario, level, ))
     if rows is None:
-        raise Http404("user_id does not exist")
+        raise Http404("user_id or level does not exist")
     else:
         lista_salida = []
         for r in rows:
@@ -97,7 +97,7 @@ def visits(request):
     stringSQL = '''SELECT Visit.id, Visit.ip, Visit.device, Visit.dateCreated FROM Visit LIMIT 10'''
     rows = cur.execute(stringSQL)
     if rows is None:
-        raise Http404("user_id does not exist")
+        raise Http404("List not available")
     else:
         lista_salida = []
         for r in rows:
@@ -107,6 +107,30 @@ def visits(request):
             d["ip"] = r[1]
             d["device"] = r[2]
             d["dateCreated"] = r[3]
+            lista_salida.append(d)
+        j = dumps(lista_salida)
+    return HttpResponse(j, content_type="text/json-comment-filtered")
+
+
+def downloads(request):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT Download.id as download_id, Download.user_id as user_id, Countries.name, 
+    Download.device, Download.dateCreated FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id 
+    AND Countries.id = User.country_id'''
+    rows = cur.execute(stringSQL)
+    if rows is None:
+        raise Http404("List not available")
+    else:
+        lista_salida = []
+        for r in rows:
+            print(r)
+            d = {}
+            d["download_id"] = r[0]
+            d["user_id"] = r[1]
+            d["country"] = r[2]
+            d["device"] = r[3]
+            d["dateCreated"] = r[4]
             lista_salida.append(d)
         j = dumps(lista_salida)
     return HttpResponse(j, content_type="text/json-comment-filtered")
