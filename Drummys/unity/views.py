@@ -84,8 +84,9 @@ def updateUser(req):
     return JsonResponse({"msg": 200})
 
 @csrf_exempt
-def registerLevel1(req):
+def registerFirstLevel(req):
     userId = req.POST["user_id"]
+    sessionId = req.POST["session_id"]
     difficulty = req.POST["difficulty"]
     playedAudio = req.POST["played_audio"]
     finalTime = req.POST["final_time"]
@@ -95,12 +96,6 @@ def registerLevel1(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     dateCreated = datetime.datetime.now()
-
-#Find Session if we don't have end date for each session
-    findSessionSql_1 = '''SELECT id FROM Session WHERE user_id=? order by dateCreated DESC limit 1'''
-    #Find Session if we have end date for each session
-    findSessionSql_2 = '''SELECT id FROM Session WHERE user_id=? AND date is NULL order by dateCreated DESC'''
-    sessionId = cur.execute(findSessionSql_2, (userId)).fetchall()[0][0]
 
     createPartySql = '''INSERT INTO Party (USER_ID, SESSION_ID, DATECREATED) VALUES (?, ?, ?)'''
     cur.execute(createPartySql, (userId, sessionId, dateCreated))
@@ -112,5 +107,34 @@ def registerLevel1(req):
     cur.execute(createLevel1Sql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
     mydb.commit()
 
-    return JsonResponse({"msg": 200})
+    return JsonResponse({"party_id": partyId})
 
+@csrf_exempt
+def registerLevel(req):
+    userId = req.POST["user_id"]
+    partyId = req.POST["party_id"]
+    difficulty = req.POST["difficulty"]
+    playedAudio = req.POST["played_audio"]
+    finalTime = req.POST["final_time"]
+    penalties = req.POST["penalties"]
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    dateCreated = datetime.datetime.now()
+
+    createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    cur.execute(createLevelSql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
+    mydb.commit()
+
+    return JsonResponse({"party_id": partyId})
+
+
+@csrf_exempt
+def level(req):
+    difficulty = req.POST["difficulty"]
+    if difficulty == "1":
+        return registerFirstLevel(req)
+    elif (difficulty == "2") | (difficulty == "3"):
+        return registerLevel(req)
+    else:
+        return JsonResponse({"error": "Numero de dificultad no es valida"})
