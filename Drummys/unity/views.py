@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads,dumps
 from django.http import Http404
+import datetime
 import collections
 import sqlite3
 # Create your views here.
@@ -10,7 +11,7 @@ import sqlite3
 def index(req):
     return HttpResponse('<p>Soy Index</p>')
 
-def usertopscores(request):
+def user_topscores(request):
     usuario = request.GET['user_id']
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
@@ -37,7 +38,7 @@ Party.total_score, Party.time_played, Party.dateCreated FROM  Party
         j = dumps(lista_salida)
     return HttpResponse(j, content_type="text/json-comment-filtered")
 
-def level(request):
+def user_level(request):
     usuario = request.GET['user_id']
     level = request.GET['level']
     mydb = sqlite3.connect("DrummyDB.db")
@@ -69,7 +70,7 @@ LIMIT 10'''
     return HttpResponse(j, content_type="text/json-comment-filtered")
 
 
-def sessions(request):
+def user_sessions(request):
     usuario = request.GET['user_id']
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
@@ -91,7 +92,7 @@ def sessions(request):
         j = dumps(lista_salida)
     return HttpResponse(j, content_type="text/json-comment-filtered")
 
-def visits(request):
+def user_visits(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Visit.id, Visit.ip, Visit.device, Visit.dateCreated FROM Visit LIMIT 10'''
@@ -133,4 +134,42 @@ def downloads(request):
             d["dateCreated"] = r[4]
             lista_salida.append(d)
         j = dumps(lista_salida)
+    return HttpResponse(j, content_type="text/json-comment-filtered")
+
+@csrf_exempt
+def game_party(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    user_id = body['user_id']
+    party_id = body['party_id']
+    total_score = body['total_score']
+    time_played = body['time_played']
+    dateCreated = datetime.datetime.now()
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    stringSQL = '''SELECT Party.session_id FROM Party WHERE Party.id = ?'''
+    rows = cur.execute(stringSQL, (party_id, ))
+    r = rows.fetchone()
+    if rows is None:
+        raise Http404("Party id does not exist")
+    else:
+        session_id = r[0]
+
+    stringSQL = '''INSERT INTO "main"."Party" ( "user_id", "session_id", 
+    "total_score", "time_played", "dateCreated") 
+    VALUES (?, ?, ?, ?, ?);'''
+
+    rows = cur.execute(stringSQL, (user_id, session_id, total_score, time_played, dateCreated, ))
+    mydb.commit()
+
+    if rows is None:
+        raise Http404("It was not possible to register party data")
+    else:
+        d = {"msg": "200"}
+        j = dumps(d)
+
+    mydb.close()
     return HttpResponse(j, content_type="text/json-comment-filtered")
