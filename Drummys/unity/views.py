@@ -172,5 +172,5 @@ def prueba(request):
     id = body['id']
     userId = body['userId']
     title = body['title']
-    print(id, userId, title)
-    return HttpResponse("holo")
+    #print(id, userId, title)
+    return HttpResponse(dumps({"msg": "200"}))
