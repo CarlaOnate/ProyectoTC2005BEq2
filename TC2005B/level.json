@@ -1,0 +1,14 @@
+[
+  {
+    "id": 3,
+    "user_id": 1,
+    "username": "username",
+    "country": "MXN",
+    "party_id": 3,
+    "difficulty": 1,
+    "played_audio": 4,
+    "final_time": "20220202:12:00:00",
+    "penalties": 1,
+    "dateCreated": "20220202:12:00:00"
+  }
+]

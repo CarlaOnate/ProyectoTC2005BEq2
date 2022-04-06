@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'unity'
+    'unity',
+    'web'
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'DrummyDB.db',
-        'OPTIONS': {'timeout': 1000},
     }
 }
 
