@@ -141,28 +141,18 @@ def game_party(request):
     body_unicode = request.body.decode('utf-8')
     body = loads(body_unicode)
 
-    user_id = body['user_id']
     party_id = body['party_id']
     total_score = body['total_score']
     time_played = body['time_played']
-    dateCreated = datetime.datetime.now()
+    penalties = body['penalties']
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
-    stringSQL = '''SELECT Party.session_id FROM Party WHERE Party.id = ?'''
-    rows = cur.execute(stringSQL, (party_id, ))
-    r = rows.fetchone()
-    if rows is None:
-        raise Http404("Party id does not exist")
-    else:
-        session_id = r[0]
+    stringSQL = '''UPDATE Party SET total_score = ?, time_played = ?, penalties = ? 
+    WHERE Party.id = ?;'''
 
-    stringSQL = '''INSERT INTO "main"."Party" ( "user_id", "session_id", 
-    "total_score", "time_played", "dateCreated") 
-    VALUES (?, ?, ?, ?, ?);'''
-
-    rows = cur.execute(stringSQL, (user_id, session_id, total_score, time_played, dateCreated, ))
+    rows = cur.execute(stringSQL, (total_score, time_played, penalties, party_id))
     mydb.commit()
 
     if rows is None:
@@ -173,3 +163,14 @@ def game_party(request):
 
     mydb.close()
     return HttpResponse(j, content_type="text/json-comment-filtered")
+
+@csrf_exempt
+def prueba(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    id = body['id']
+    userId = body['userId']
+    title = body['title']
+    print(id, userId, title)
+    return HttpResponse("holo")
