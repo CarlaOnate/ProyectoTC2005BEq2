@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawStuff);
+
+      function drawStuff() {
+        console.log('values =>', {{ values | safe }})
+        var data = new google.visualization.arrayToDataTable( {{ values | safe }} );
+
+        var options = {
+          title: 'Grafica 1',
+          width: 500,
+          height: 500,
+          legend: { position: 'none' },
+          chart: {
+              title: {{ title | safe }},
+            },
+          bars: 'horizontal',
+          axes: {
+            x: {
+              0: { side: 'top', label: 'Time (s)'}
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        chart.draw(data, options);
+        }
+    </script>
+  </head>
+  <body>
+    <div id="top_x_div"></div>
+  </body>
+</html>

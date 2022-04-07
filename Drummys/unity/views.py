@@ -60,11 +60,12 @@ LIMIT 10'''
             d["user_id"] = r[1]
             d["username"] = r[2]
             d["country"] = r[3]
-            d["difficulty"] = r[4]
-            d["played_audio"] = r[5]
-            d["final_time"] = r[6]
-            d["penalties"] = r[7]
-            d["dateCreated"] = r[8]
+            d["country"] = r[4]
+            d["difficulty"] = r[5]
+            d["played_audio"] = r[6]
+            d["final_time"] = r[7]
+            d["penalties"] = r[8]
+            d["dateCreated"] = r[9]
             lista_salida.append(d)
         j = dumps(lista_salida)
     return HttpResponse(j, content_type="text/json-comment-filtered")
