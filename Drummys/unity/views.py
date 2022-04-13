@@ -165,13 +165,4 @@ def game_party(request):
     mydb.close()
     return HttpResponse(j, content_type="text/json-comment-filtered")
 
-@csrf_exempt
-def prueba(request):
-    body_unicode = request.body.decode('utf-8')
-    body = loads(body_unicode)
 
-    id = body['id']
-    userId = body['userId']
-    title = body['title']
-    #print(id, userId, title)
-    return HttpResponse(dumps({"msg": "200"}))
