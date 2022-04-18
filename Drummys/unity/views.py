@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
+from json import loads,dumps
 import datetime
 import sqlite3
 
@@ -138,3 +139,33 @@ def level(req):
         return registerLevel(req)
     else:
         return JsonResponse({"error": "Numero de dificultad no es valida"})
+
+
+#####################################
+# Tarea Unity-Django
+
+@csrf_exempt
+def alta(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    username = body['username']
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    stringSQL = '''INSERT INTO User (username, country_id, password, age)
+VALUES (?, 1, 1, 1)'''
+
+    rows = cur.execute(stringSQL, (username,))
+    mydb.commit()
+
+    if rows is None:
+        raise Http404("It was not possible to register that user")
+    else:
+        d = {"msg": "User added with success!"}
+        j = dumps(d)
+
+    mydb.close()
+    return HttpResponse(j, content_type="text/json-comment-filtered")
+
