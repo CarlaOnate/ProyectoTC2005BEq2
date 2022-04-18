@@ -6,22 +6,20 @@
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-      var data = google.visualization.arrayToDataTable([
-        ['Year', 'Sales'],
-        ['2014', 1000],
-        ['2015', 1170],
-        ['2016', 660],
-        ['2017', 1030]
-      ]);
+      const data = google.visualization.arrayToDataTable({{data|safe}});
 
-      var options = {
+      const options = {
         chart: {
-          title: 'Company Performance',
-          subtitle: 'Sales, Expenses, and Profit: 2014-2017',
+          title: 'Visits',
+          subtitle: 'Last 10 visits',
+          vAxis: {
+            scaleType: 'log'
+          },
+          legend: 'none',
         }
       };
 
-      var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+      const chart = new google.charts.Bar(document.getElementById('columnchart_material'));
 
       chart.draw(data, google.charts.Bar.convertOptions(options));
     }

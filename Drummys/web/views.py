@@ -14,37 +14,16 @@ def index(req):
 def user_visits(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''SELECT Visit.id, Visit.ip, Visit.device, Visit.dateCreated FROM Visit LIMIT 10'''
+    stringSQL = '''select count (*), dateCreated from Visit where dateCreated = Visit.dateCreated group by dateCreated LIMIT 10;'''
     rows = cur.execute(stringSQL)
-    '''
-        if rows is None:
-            raise Http404("List not available")
-        else:
-            lista_salida = []
-            for r in rows:
-                print(r)
-                d = {}
-                d["visit_id"] = r[0]
-                d["ip"] = r[1]
-                d["device"] = r[2]
-                d["dateCreated"] = r[3]
-                lista_salida.append(d)
-            j = dumps(lista_salida)
-            print(j)
-    '''
+    print('\n\n fetchAll =>', rows, '\n\n')
     if rows is None:
         raise Http404("List not available")
     else:
-        data = []
+        data = [['Date', 'Visits']]
         for r in rows:
-            print(r)
-            d = {}
-            d["visit_id"] = r[0]
-            d["ip"] = r[1]
-            d["device"] = r[2]
-            d["dateCreated"] = r[3]
-            data.append(d)
-        j = dumps(data)
-        print(j)
-    #return HttpResponse(j, content_type="text/json-comment-filtered")
-    return render(request, 'web/visits.html', { "data": data })
+            date = datetime.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+            data.append([date, r[0]])
+        dataJson = dumps(data)
+        print('\n\n data => ', data, '\n\n')
+    return render(request, 'web/visits.html', {'data': dataJson})
