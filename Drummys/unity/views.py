@@ -138,3 +138,16 @@ def level(req):
         return registerLevel(req)
     else:
         return JsonResponse({"error": "Numero de dificultad no es valida"})
+
+@csrf_exempt
+def cambio(req):
+    id = req.POST["id"]
+    username = req.POST["username"]
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    updateUserSql = '''UPDATE User SET username=? WHERE id=?;'''
+    cur.execute(updateUserSql, (username, id))
+    mydb.commit()
+
+    return JsonResponse({"msg": 200})
