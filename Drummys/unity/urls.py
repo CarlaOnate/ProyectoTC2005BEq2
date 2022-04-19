@@ -8,7 +8,7 @@ urlpatterns = [
     path('user/level', views.user_level, name='user/level'),
     path('user/sessions', views.user_sessions, name='user/sessions'),
 #    path('visits', views.user_visits, name='user/visits'),
-    path('downloads', views.downloads, name='downloads'),
+#    path('downloads', views.downloads, name='downloads'),
     path('game/party', views.game_party, name='game/party'),
     path('prueba', views.prueba, name='prueba'),
 ]
