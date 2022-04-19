@@ -181,3 +181,28 @@ VALUES (?, 1, 1, 1)'''
     mydb.close()
     return HttpResponse(j, content_type="text/json-comment-filtered")
 
+@csrf_exempt
+def consulta(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    username = body['username']
+    password = body['password']
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    stringSQL = '''SELECT username FROM User WHERE username = ? AND password = ? '''
+
+    rows = cur.execute(stringSQL, (username, password,)).fetchall()
+    mydb.commit()
+
+    if rows is None:
+        raise Http404("User not found")
+    else:
+        d = {"msg": "Welcome!"}
+        j = dumps(d)
+
+    mydb.close()
+    return HttpResponse(j, content_type="text/json-comment-filtered")
+

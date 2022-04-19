@@ -9,5 +9,6 @@ urlpatterns = [
     path('user/updateUser', views.updateUser, name='updateUser'),
     path('game/alta', views.alta, name='alta'),
     path('level', views.level, name='level'),
-    path('cambio', views.cambio, name='cambio')
+    path('cambio', views.cambio, name='cambio'),
+    path('consulta', views.consulta, name='consulta')
 ]
