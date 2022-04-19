@@ -196,9 +196,11 @@ def consulta(request):
 
     rows = cur.execute(stringSQL, (username, password,)).fetchall()
     mydb.commit()
-
-    if rows is None:
-        raise Http404("User not found")
+    print(rows)
+    if len(rows) == 0:
+        #raise Http404("User not found")
+        d = {"msg": "User not found!"}
+        j = dumps(d)
     else:
         d = {"msg": "Welcome!"}
         j = dumps(d)
