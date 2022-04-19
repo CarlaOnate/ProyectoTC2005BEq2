@@ -29,9 +29,6 @@ def user_visits(request):
 def downloads(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    # stringSQL = '''SELECT Download.id as download_id, Download.user_id as user_id, Countries.name,
-    # Download.device, Download.dateCreated FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id
-    # AND Countries.id = User.country_id'''
     stringSQL = '''SELECT COUNT(*), Countries.name FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id
     AND Countries.id = User.country_id GROUP BY Countries.name'''
     rows = cur.execute(stringSQL)
