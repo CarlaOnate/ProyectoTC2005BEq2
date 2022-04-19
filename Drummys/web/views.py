@@ -42,3 +42,29 @@ def downloads(request):
         print(data)
     return render(request, 'web/download-graph.html', {'data': dataJson})
 
+def stats(req):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    downloadsSql = '''SELECT COUNT(*), Countries.name FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id
+    AND Countries.id = User.country_id GROUP BY Countries.name'''
+    visitsSql = '''select count (*), dateCreated from Visit where dateCreated = Visit.dateCreated group by dateCreated LIMIT 10;'''
+
+    downloads = cur.execute(downloadsSql).fetchall()
+    visits = cur.execute(visitsSql).fetchall()
+
+    dataDownload = [['Country', 'Downloads']]
+    dataVisits = [['Date', 'Visits']]
+    for el in downloads:
+        dataDownload.append([el[1], el[0]])
+
+    for el in visits:
+        date = datetime.datetime.strptime(el[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+        dataVisits.append([date, el[0]])
+
+    downloadJson = dumps(dataDownload)
+    visitsJson = dumps(dataVisits)
+    print('\n\ndataVisits', dataVisits)
+    print('\n\ndataDownload', dataDownload)
+    return render(req, 'web/stats.html', {"download": downloadJson, "visits": visitsJson})
+

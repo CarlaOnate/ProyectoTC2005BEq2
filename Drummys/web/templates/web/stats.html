@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Drummy's Adventures</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+        {% load static %}
+        <link href="{%static 'styles.css'%}" rel="stylesheet"/>
+        {% load static %}
+        <link rel="shortcut icon" href="{%static 'assets/drummy.png'%}"/>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        {% load static %}
+        <script type="text/javascript" src="{%static 'js/index.js'%}"></script>
+        <script type="text/javascript">
+            const visitas = {{ visits | safe }};
+            const downloads = {{ download | safe }};
+        </script>
+    </head>
+    <body>
+        <div id="navbar">
+            <div>
+                <a href="../index.html"><img class="navbar-imgs" src="{%static 'assets/drummy.png'%}"/></a>
+            </div>
+            <div>
+                <p><a href="../index.html" class="black">Home</a></p>
+                <p><a href="../../../static/views/download.html" class="black">Download</a></p>
+                <p><a href="stats.html" class="orange">Stats</a></p>
+                <p><a href="../../../static/views/aboutus.html" class="black">About us</a></p>
+                <p><a href="../../../static/views/login.html" class="black">Login</a></p>
+                <img id="navbar-imgs" src="../../../static/assets/drum.png"/>
+            </div>
+        </div>
+        <section id="stats">
+            <div id="stat_description">
+                <h1>Stats</h1>
+                <p>In this section you'll find the global stats for the game and the website. To see personal stats you'll have to login and see the my stats section.</p>
+            </div>
+            <div id="graphs">
+                <div id="visitsChart" style="width: 500px; height: 500px;"></div>
+                <div id="downloadChart" style="width: 900px; height: 500px;"></div>
+            </div>
+        </section>
+       
+    </body>
+</html>

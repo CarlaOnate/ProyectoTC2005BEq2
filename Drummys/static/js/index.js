@@ -1,5 +1,13 @@
 // For the Sign-out menu
 const storage = window.localStorage
+google.charts.load('current', {'packages':['bar']});
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(visitsChart);
+google.charts.setOnLoadCallback(downloadChart);
+visitsChart();
+downloadChart();
+
+console.log(visitas, downloads)
 
 $(document).ready(() => {
     $("#save-button").hide();
@@ -35,4 +43,34 @@ const saveUsername = () => {
 
 const handleInputChange = () => {
     localStorage['username'] = $("#username-input").val();
+}
+
+function visitsChart() {
+    const data = google.visualization.arrayToDataTable(visitas);
+
+    const options = {
+        chart: {
+            title: 'Visits',
+            subtitle: 'Last 10 visits',
+        },
+        legend: {
+            position: 'none',
+        },
+    };
+
+    const chart = new google.charts.Bar(document.getElementById('visitsChart'));
+
+    chart.draw(data, google.charts.Bar.convertOptions(options));
+}
+
+function downloadChart() {
+    const data = google.visualization.arrayToDataTable(downloads)
+
+    const options = {
+        title: 'Downloads by country'
+    };
+
+    const chart = new google.visualization.PieChart(document.getElementById('downloadChart'));
+
+    chart.draw(data, options);
 }

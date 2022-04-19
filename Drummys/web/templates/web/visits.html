@@ -1,12 +1,10 @@
-<html>
-<head>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
   <script type="text/javascript">
     google.charts.load('current', {'packages':['bar']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function drawChart() {
-      const data = google.visualization.arrayToDataTable({{data|safe}});
+    google.charts.setOnLoadCallback(visitsChart);
+    console.log(' HOLIII  ')
+    function visitsChart() {
+      const data = google.visualization.arrayToDataTable({{ visits | safe }});
 
       const options = {
         chart: {
@@ -18,13 +16,9 @@
         },
       };
 
-      const chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+      const chart = new google.charts.Bar(document.getElementById('visitsChart'));
 
       chart.draw(data, google.charts.Bar.convertOptions(options));
     }
   </script>
-</head>
-<body>
-<div id="columnchart_material" style="width: 500px; height: 500px;"></div>
-</body>
-</html>
+  <div id="visitsChart" style="width: 500px; height: 500px;"></div>
