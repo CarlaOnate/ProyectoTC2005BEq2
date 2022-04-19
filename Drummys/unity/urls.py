@@ -10,5 +10,5 @@ urlpatterns = [
     path('game/alta', views.alta, name='alta'),
     path('level', views.level, name='level'),
     path('cambio', views.cambio, name='cambio'),
-    path('consulta', views.consulta, name='consulta')
+    path('game/consulta', views.consulta, name='consulta')
 ]
