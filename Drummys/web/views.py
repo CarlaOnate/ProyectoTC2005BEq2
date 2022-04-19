@@ -16,7 +16,6 @@ def user_visits(request):
     cur = mydb.cursor()
     stringSQL = '''select count (*), dateCreated from Visit where dateCreated = Visit.dateCreated group by dateCreated LIMIT 10;'''
     rows = cur.execute(stringSQL)
-    print('\n\n fetchAll =>', rows, '\n\n')
     if rows is None:
         raise Http404("List not available")
     else:
@@ -25,5 +24,4 @@ def user_visits(request):
             date = datetime.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
             data.append([date, r[0]])
         dataJson = dumps(data)
-        print('\n\n data => ', data, '\n\n')
     return render(request, 'web/visits.html', {'data': dataJson})
