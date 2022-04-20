@@ -12,25 +12,31 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"></head>
-  <link rel="shortcut icon" href="../../../static/assets/drummy.png"/>
-  <link rel="stylesheet" href="../../../static/styles.css">
+{% load static %}
+<link rel="shortcut icon" href="{% static 'assets/drummy.png' %}"/>
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
 <body>
 <div id="navbar">
   <div>
-    <a href="index.html"><img class="navbar-imgs" src="../../../static/assets/drummy.png"/></a>
+    {% load static %}
+    <a href="index"><img class="navbar-imgs" src="{% static 'assets/drummy.png' %}"/></a>
   </div>
   <div>
-    <p><a href="index.html" class="orange">Home</a></p>
-    <p><a href="../../../static/views/download.html" class="black">Download</a></p>
-    <p><a href="stats.html" class="black">Stats</a></p>
-    <p><a href="../../../static/views/aboutus.html" class="black">About us</a></p>
-    <p><a href="login.html" class="black">Login</a></p>
-    <img id="navbar-imgs" src="../../../static/assets/drum.png"/>
+    <p><a href="index" class="orange">Home</a></p>
+    <p><a href="download" class="black">Download</a></p>
+    <p><a href="stats" class="black">Stats</a></p>
+    <p><a href="aboutus" class="black">About us</a></p>
+    <p><a href="login" class="black">Login</a></p>
+    {% load static %}
+    <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
   </div>
 </div>
 <section id="banner">
   <div class="banner-container">
-  <img src="../../../static/assets/controller.jpg" id="controller">
+    {% load static %}
+  <img src="{% static 'assets/controller.jpg' %}" id="controller">
 </img>
   <div class="text-box">
      <h1>Drummy's Adventures {{ valor }}</h1>
@@ -60,21 +66,24 @@
     <div class="boxes">
       <div class="sub-box">
         <div class="image-container">
-          <img src="../../../static/assets/escenario.png"></img>
+          {% load static %}
+          <img src="{% static 'assets/escenario.png' %}"></img>
         </div>
         <h2>Levels</h2>
         <p>The game has three levels, each one more difficult. Drummy has to play the right notes to be able to solve each puzzle. The game shows the main notes of three precussion instruments.</p>
       </div>
       <div class="sub-box">
         <div class="image-container">
-          <img src="../../../static/assets/escenario.png"></img>
+          {% load static %}
+          <img src="{% static 'assets/escenario.png' %}"></img>
         </div>
         <h2>Score</h2>
         <p>Be the best by saving all your friends the fastest way you can. Drummy has to go through all the levels to finish the game and save all his comrades. The scores of all the players are shown in top scores. Can you be the best?</p>
       </div>
       <div class="sub-box">
         <div class="image-container">
-          <img src="../../../static/assets/escenario.png"></img>
+          {% load static %}
+          <img src="{% static 'assets/escenario.png' %}"></img>
         </div>
         <h2>Learn</h2>
         <p>Learn while having some fun. Know some of the main notes of percussion instruments like: ....... Also learn some tips to prevent injuries while playing. See your progress in your personal profile and see how quick you can identify the notes for each instrument.</p>
@@ -91,19 +100,23 @@
       <div class="scores-container">
         <div class="see-scores">
           <h3>Top Scores</h3>
-          <img src="../../../static/assets/score.png">
+          {% load static %}
+          <img src="{% static 'assets/score.png' %}">
         </div>
         <div class="see-scores">
           <h3>Level Scores</h3>
-          <img src="../../../static/assets/level-up.png">
+          {% load static %}
+          <img src="{% static 'assets/level-up.png' %}">
         </div>
         <div class="see-scores">
           <h3>Downloads</h3>
-          <img src="../../../static/assets/download.png">
+          {% load static %}
+          <img src="{% static 'assets/download.png' %}">
         </div>
       </div>
     </div>
-    <img src="../../../static/assets/statsexample.png" id="stats-example">
+    {% load static %}
+    <img src="{% static 'assets/statsexample.png' %}" id="stats-example">
   </div>
 </section>
 <section id="footer-main">
@@ -112,8 +125,9 @@
       <h1>Download the Game</h1>
       <h2>Try this game for yourself!</h2>
     </div>
-    <button type="button" name="Download"><a href="../../../static/views/download.html" class="white">Download the Game</a></button>
-    <img src="../../../static/assets/drummy.png">
+    <button type="button" name="Download"><a href="download" class="white">Download the Game</a></button>
+   {% load static %}
+    <img src="{% static 'assets/drummy.png' %}">
   </div>
   <div class="footer-main-bottom">
   </div>

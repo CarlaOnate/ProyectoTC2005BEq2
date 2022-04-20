@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drummy's Adventures</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"></head>
+{% load static %}
+<link rel="shortcut icon" href="{% static 'assets/drummy.png' %}"/>
+{% load static %}
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+<body>
+<div id="navbar">
+  <div>
+    {% load static %}
+    <a href="index"><img class="navbar-imgs" src="{% static 'assets/drummy.png' %}"/></a>
+  </div>
+  <div>
+    <p><a href="index" class="black">Home</a></p>
+    <p><a href="download" class="black">Download</a></p>
+    <p><a href="stats" class="black">Stats</a></p>
+    <p><a href="aboutus" class="black">About us</a></p>
+    <p><a href="login" class="orange">Login</a></p>
+    {% load static %}
+    <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
+  </div>
+</div>
+<section id="signup">
+  <div>
+    <h2>Login</h2>
+    <p class="light-text">Login to your account to see your personal stats. To play the game you must have an account.</p>
+  </div>
+  <div id="input-boxes">
+    <div>
+      <label class="bold-text">Email</label>
+      <input placeholder="Email" name="email"/>
+    </div>
+    <div>
+      <label class="bold-text">Password</label>
+      <input placeholder="Password" name="age"/>
+    </div>
+  </div>
+  <div>
+    <a href="dashboard"><button class="button-outline-orange button-small" id="login-button">Login</button></a>
+  </div>
+  <div>
+    <p>You don't have an account? Create one here!</p>
+    <a href="signup"><button class="button-outline-orange button-small">Signup</button></a>
+  </div>
+</section>
+</body>
+</html>
