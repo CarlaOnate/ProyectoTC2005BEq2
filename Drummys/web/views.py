@@ -8,9 +8,6 @@ import collections
 import sqlite3
 
 # Create your views here.
-def index(req):
-    return render(req, 'web/index.html', ({"valor": 111}))
-
 
 def topscores_global(request):
     mydb = sqlite3.connect("DrummyDB.db")
@@ -60,4 +57,45 @@ LIMIT 10'''
     modified_title = dumps(title)
 
     return render(request, 'barrasHorizontales.html', {'values': j, 'title': modified_title})
+
+
+def aboutus(request):
+    return render(request, 'aboutus.html')
+
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
+
+def download(request):
+    return render(request, 'download.html')
+
+
+def download_logged(request):
+    return render(request, 'download-logged.html')
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def login(request):
+    return render(request, 'login.html')
+
+
+def my_stats(request):
+    return render(request, 'my-stats.html')
+
+
+def signup(request):
+    return render(request, 'signup.html')
+
+
+def stats(request):
+    return render(request, 'stats.html')
+
+
+def thankyou(request):
+    return render(request, 'thankyou.html')
+
 
