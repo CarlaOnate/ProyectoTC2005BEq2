@@ -970,3 +970,11 @@ input {
   border: solid 1px #E76F51;
   color: white;
 }
+
+#login-form {
+    height: 100%;
+}
+
+#login-form form {
+    min-height: 85%;
+}
