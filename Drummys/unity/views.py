@@ -192,7 +192,7 @@ def consulta(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
-    stringSQL = '''SELECT username FROM User WHERE username = ? AND password = ? '''
+    stringSQL = '''SELECT username, id FROM User WHERE username = ? AND password = ? '''
 
     rows = cur.execute(stringSQL, (username, password,)).fetchall()
     mydb.commit()
@@ -202,7 +202,7 @@ def consulta(request):
         d = {"msg": "User not found!"}
         j = dumps(d)
     else:
-        d = {"msg": "Welcome!"}
+        d = {"username": rows[0][0], "id": rows[0][1]}
         j = dumps(d)
 
     mydb.close()
