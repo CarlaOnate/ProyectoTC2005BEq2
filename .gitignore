@@ -1,5 +1,6 @@
 .idea
 .DS:Store
+.DS_Store
 .vs
 Drummys/Drummys/__pycache__/
 unity/__pycache__/
