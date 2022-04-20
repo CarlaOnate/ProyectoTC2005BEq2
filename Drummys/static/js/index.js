@@ -2,12 +2,13 @@
 const storage = window.localStorage
 google.charts.load('current', {'packages':['bar']});
 google.charts.load('current', {'packages':['corechart']});
+google.charts.load('current', {'packages':['table']});
 google.charts.setOnLoadCallback(visitsChart);
 google.charts.setOnLoadCallback(downloadChart);
-visitsChart();
-downloadChart();
-
-console.log(visitas, downloads)
+google.charts.setOnLoadCallback(() => horizontalBars(level1, 1));
+google.charts.setOnLoadCallback(() => horizontalBars(level2, 2));
+google.charts.setOnLoadCallback(() => horizontalBars(level3, 3));
+google.charts.setOnLoadCallback(table);
 
 $(document).ready(() => {
     $("#save-button").hide();
@@ -46,7 +47,7 @@ const handleInputChange = () => {
 }
 
 function visitsChart() {
-    const data = google.visualization.arrayToDataTable(visitas);
+    const data = google.visualization.arrayToDataTable(visits)
 
     const options = {
         chart: {
@@ -73,4 +74,35 @@ function downloadChart() {
     const chart = new google.visualization.PieChart(document.getElementById('downloadChart'));
 
     chart.draw(data, options);
+}
+
+function horizontalBars (level, levelNumber) {
+    var data = new google.visualization.arrayToDataTable(JSON.parse(level.values));
+
+    var options = {
+        width: 500,
+        height: 500,
+        legend: { position: 'none' },
+        chart: {
+            title: level.title ,
+        },
+        bars: 'horizontal',
+            axes: {
+            x: {
+                0: { side: 'top', label: 'Time (s)'}
+            }
+        },
+        bar: { groupWidth: "90%" }
+    };
+
+    var chart = new google.charts.Bar(document.getElementById(`level${levelNumber}`));
+    chart.draw(data, options);
+}
+
+function table () {
+    var data = new google.visualization.arrayToDataTable(topscores);
+
+    var table = new google.visualization.Table(document.getElementById('table_div'));
+
+    table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
 }

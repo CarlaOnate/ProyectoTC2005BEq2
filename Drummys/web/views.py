@@ -8,6 +8,8 @@ import sqlite3
 import collections
 
 # Create your views here.
+def index(request):
+    return render(request, 'index.html')
 
 def topscores_global(request):
     mydb = sqlite3.connect("DrummyDB.db")
@@ -22,18 +24,13 @@ Party.total_score, Party.time_played, Party.dateCreated FROM  Party
     else:
         lista_salida = [["Username", "Country", "Total Score", "Time Played", "Date"]]
         for r in rows:
-            print(r)
-            d = [r[2], r[3], r[4], r[5], r[6]]
+            date = datetime.datetime.strptime(r[6], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+            d = [r[2], r[3], r[4], r[5], date]
             lista_salida.append(d)
         j = dumps(lista_salida)
+    return j
 
-    title = 'Global Top Scores'
-    modified_title = dumps(title)
-
-    return render(request, 'tablaTopScores.html', {'values': j, 'title': modified_title})
-
-def graficaL1(request):
-    level = request.GET['level']
+def graficaGlobalLevel(level):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Levels.id as Lvl_ID, User.id as User_ID,User.username, Countries.name as Country, 
@@ -48,62 +45,19 @@ LIMIT 10'''
     else:
         lista_salida = [['Users', 'Time (s)']]
         for r in rows:
-            print(r)
             d = [r[2], r[7]]
             lista_salida.append(d)
         j = dumps(lista_salida)
 
-    title = 'Graph Level 1'
+    title = 'Graph Level ' + str(level)
     modified_title = dumps(title)
+    print('\n\nj =>', j ,'\n\n')
+    return({
+        'values': j,
+        'title': modified_title
+    })
 
-    return render(request, 'barrasHorizontales.html', {'values': j, 'title': modified_title})
-
-
-def aboutus(request):
-    return render(request, 'aboutus.html')
-
-
-def dashboard(request):
-    return render(request, 'dashboard.html')
-
-
-def download(request):
-    return render(request, 'download.html')
-
-
-def download_logged(request):
-    return render(request, 'download-logged.html')
-
-
-def index(request):
-    return render(request, 'index.html')
-
-
-def login(request):
-    return render(request, 'login.html')
-
-
-def my_stats(request):
-    return render(request, 'my-stats.html')
-
-
-def signup(request):
-    return render(request, 'signup.html')
-
-
-def stats(request):
-    return render(request, 'stats.html')
-
-
-def thankyou(request):
-    return render(request, 'thankyou.html')
-
-
-
-def index(req):
-    return render(req, 'web/index.html', ({}))
-
-def user_visits(request):
+def user_visits(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''select count (*), dateCreated from Visit where dateCreated = Visit.dateCreated group by dateCreated LIMIT 10;'''
@@ -116,9 +70,9 @@ def user_visits(request):
             date = datetime.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
             data.append([date, r[0]])
         dataJson = dumps(data)
-    return render(request, 'web/visits.html', {'data': dataJson})
+    return dataJson
 
-def downloads(request):
+def downloads(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT COUNT(*), Countries.name FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id
@@ -131,35 +85,42 @@ def downloads(request):
         for r in rows:
             data.append([r[1], r[0]])
         dataJson = dumps(data)
-        print(data)
-    return render(request, 'web/download-graph.html', {'data': dataJson})
+    return dataJson
 
 def stats(req):
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
+    downloadJson = downloads(req)
+    visitsJson = user_visits(req)
+    topscoresGlobal = topscores_global(req)
+    level1Global = graficaGlobalLevel(1)
+    level2Global = graficaGlobalLevel(2)
+    level3Global = graficaGlobalLevel(3)
+    return render(req, 'web/stats.html', {
+        "downloads": downloadJson,
+        "visits": visitsJson,
+        "topscores": topscoresGlobal,
+        "level1": level1Global,
+        "level2": level2Global,
+        "level3": level3Global,
+    })
 
-    downloadsSql = '''SELECT COUNT(*), Countries.name FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id
-    AND Countries.id = User.country_id GROUP BY Countries.name'''
-    visitsSql = '''select count (*), dateCreated from Visit where dateCreated = Visit.dateCreated group by dateCreated LIMIT 10;'''
+# -- KINK OF STATIC VIEWS --
+def aboutus(request):
+    return render(request, 'aboutus.html')
 
-    downloads = cur.execute(downloadsSql).fetchall()
-    visits = cur.execute(visitsSql).fetchall()
+def dashboard(request):
+    return render(request, 'dashboard.html')
 
-    dataDownload = [['Country', 'Downloads']]
-    dataVisits = [['Date', 'Visits']]
-    for el in downloads:
-        dataDownload.append([el[1], el[0]])
+def download(request):
+    return render(request, 'download.html')
 
-    for el in visits:
-        date = datetime.datetime.strptime(el[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
-        dataVisits.append([date, el[0]])
+def download_logged(request):
+    return render(request, 'download-logged.html')
 
-    downloadJson = dumps(dataDownload)
-    visitsJson = dumps(dataVisits)
-    print('\n\ndataVisits', dataVisits)
-    print('\n\ndataDownload', dataDownload)
-    return render(req, 'web/stats.html', {"download": downloadJson, "visits": visitsJson})
+def my_stats(request):
+    return render(request, 'my-stats.html')
 
+def thankyou(request):
+    return render(request, 'thankyou.html')
 
 # ------ AUTH ---------
 def authLogin(req):
