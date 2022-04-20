@@ -59,6 +59,7 @@ function visitsChart() {
     };
 
     const chart = new google.charts.Bar(document.getElementById('visitsChart'));
+
     chart.draw(data, google.charts.Bar.convertOptions(options));
 }
 
@@ -70,5 +71,6 @@ function downloadChart() {
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('downloadChart'));
+
     chart.draw(data, options);
 }

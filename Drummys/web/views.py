@@ -1,7 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
 from json import loads,dumps
 from django.http import Http404
 import datetime
@@ -69,27 +68,3 @@ def stats(req):
     print('\n\ndataDownload', dataDownload)
     return render(req, 'web/stats.html', {"download": downloadJson, "visits": visitsJson})
 
-def loginView(req):
-    return render(req, 'registration/login.html', {})
-
-def authLogin(req):
-    username = req.POST['username']
-    password = req.POST['password']
-    print('\n\n login => ', req.POST, '\n\n')
-    user = authenticate(req, username=username, password=password)
-    if user is not None:
-        login(req, user)
-        print('\n\n req.user => ', req.user, '\n\n')
-        return redirect("http://127.0.0.1:8000/")  # Todo: Poner liga buena al dashboard
-    else:
-        return render(req, "registration/login.html", { "error": "Password or username is incorrect"})
-
-def signupView(req):
-    return render(req, "registration/login.html", { "error": "Password or username is incorrect"})
-
-def authSignup(req):
-    username = req.POST["username"]
-    age = req.POST["age"]
-    password = req.POST["password"]
-    country = req.POST["country"]
-    return render(req, "registration/login.html", { "error": "Password or username is incorrect"})
