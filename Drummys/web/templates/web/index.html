@@ -1,43 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Drummy's Adventures</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"></head>
-{% load static %}
-<link rel="shortcut icon" href="{% static 'assets/drummy.png' %}"/>
-
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'styles.css' %}">
-<body>
-<div id="navbar">
-  <div>
-    {% load static %}
-    <a href="index"><img class="navbar-imgs" src="{% static 'assets/drummy.png' %}"/></a>
-  </div>
-  <div>
-    <p><a href="index" class="orange">Home</a></p>
-    <p><a href="download" class="black">Download</a></p>
-    <p><a href="stats" class="black">Stats</a></p>
-    <p><a href="aboutus" class="black">About us</a></p>
-    <p><a href="login" class="black">Login</a></p>
-    {% load static %}
-    <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
-  </div>
-</div>
+{% extends "web/navbar-footer.html" %}
+{% block content %}
 <section id="banner">
   <div class="banner-container">
     {% load static %}
-  <img src="{% static 'assets/controller.jpg' %}" id="controller">
-</img>
+  <img src="{% static 'assets/controller.jpg' %}" id="controller" />
   <div class="text-box">
      <h1>Drummy's Adventures {{ valor }}</h1>
      <h2>Follow Drummy's <br>Adventures and save your fellow<br> percussionists using your music skills.</h2>
@@ -119,18 +85,4 @@
     <img src="{% static 'assets/statsexample.png' %}" id="stats-example">
   </div>
 </section>
-<section id="footer-main">
-  <div class="footer-main-top">
-    <div class="text-box">
-      <h1>Download the Game</h1>
-      <h2>Try this game for yourself!</h2>
-    </div>
-    <button type="button" name="Download"><a href="download" class="white">Download the Game</a></button>
-   {% load static %}
-    <img src="{% static 'assets/drummy.png' %}">
-  </div>
-  <div class="footer-main-bottom">
-  </div>
-</section>
-</body>
-</html>
+{% endblock %}

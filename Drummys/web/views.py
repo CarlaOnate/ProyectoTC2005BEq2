@@ -11,12 +11,14 @@ import collections
 def index(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''INSERT INTO Visits VALUES()'''
-
-    print('\n\n request => ', request.META, '\n\n')
-    print('\n\n request => ', request.META.get('HTTP_USER_AGENT'), '\n\n')
-    print('\n\n request => ', request.META.get('HTTP_HOST'), '\n\n')
-    return render(request, 'index.html')
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    ip = request.META.get('HTTP_HOST')
+    device = request.META.get('HTTP_USER_AGENT')
+    stringSQL = '''INSERT INTO Visit (ip, device, dateCreated) VALUES(?, ?, ?)'''
+    cur.execute(stringSQL, (ip, device, dateCreated))
+    mydb.commit()
+    mydb.close()
+    return render(request, 'web/index.html')
 
 #  --- GRAPHS ---
 def topscores_global(request):
@@ -200,19 +202,19 @@ def myStats(req):
 
 # -- KINK OF STATIC VIEWS --
 def aboutus(request):
-    return render(request, 'aboutus.html')
+    return render(request, 'web/aboutus.html')
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'web/dashboard.html')
 
 def download(request):
-    return render(request, 'download.html')
+    return render(request, 'web/download.html')
 
 def download_logged(request):
-    return render(request, 'download-logged.html')
+    return render(request, 'web/download-logged.html')
 
 def thankyou(request):
-    return render(request, 'thankyou.html')
+    return render(request, 'web/thankyou.html')
 
 # ------ AUTH ---------
 def authLogin(req):
@@ -268,15 +270,18 @@ def authSignup(req):
     password = req.POST["password"]
     country = req.POST["country"]
 
+    print('\n\n', username, age, password, country, '\n\n')
+
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
+
     stringSQL = '''INSERT INTO User (username, country_id, password, age) VALUES (?, ?, ?, ?)'''
     cur.execute(stringSQL, (username, age, password, country,))
     retrieveUserSql = '''SELECT id FROM User WHERE username=? AND password=?'''
     user = cur.execute(retrieveUserSql, (username, password)).fetchall()
     mydb.commit()
     mydb.close()
-    return redirect('login')
+    return redirect('thankyou')
 
 # @login_required # todo
 def updateUser(req):
