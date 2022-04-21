@@ -9,6 +9,13 @@ import collections
 
 # Create your views here.
 def index(request):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''INSERT INTO Visits VALUES()'''
+
+    print('\n\n request => ', request.META, '\n\n')
+    print('\n\n request => ', request.META.get('HTTP_USER_AGENT'), '\n\n')
+    print('\n\n request => ', request.META.get('HTTP_HOST'), '\n\n')
     return render(request, 'index.html')
 
 #  --- GRAPHS ---
@@ -16,9 +23,9 @@ def topscores_global(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.nickname as Country, 
-Party.total_score, Party.time_played, Party.dateCreated FROM  Party
- INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
- ORDER BY Party.total_score LIMIT 10 '''
+    Party.total_score, Party.time_played, Party.dateCreated FROM  Party
+    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
+    ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL)
     if rows is None:
         raise Http404("user_id does not exist")
