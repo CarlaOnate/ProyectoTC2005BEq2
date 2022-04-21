@@ -11,6 +11,7 @@ import collections
 def index(request):
     return render(request, 'index.html')
 
+#  --- GRAPHS ---
 def topscores_global(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
@@ -270,9 +271,10 @@ def authSignup(req):
     mydb.close()
     return redirect('login')
 
-
+# @login_required # todo
 def updateUser(req):
-    id = req.POST["id"]
+    # id = req.POST["id"] # todo: se saca de req.user
+    id = "1"
     username = req.POST["username"]
     # User needs to be logged in -> missing logic
 
@@ -284,3 +286,37 @@ def updateUser(req):
     mydb.close()
 
     return JsonResponse({"msg": 200})
+
+# @login_required # todo
+def getUser(req):
+    # id = req.POST["id"] # todo: se saca de req.user
+    id = "1"
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    getUserSql = '''SELECT User.id, User.username, Countries.name as Country, User.age FROM User
+    , Countries WHERE User.id = ? AND Countries.id = User.country_id;'''
+    user = cur.execute(getUserSql, (id)).fetchall()
+    mydb.commit()
+    mydb.close()
+
+    return JsonResponse({"id": user[0][0], "username": user[0][1], "country": user[0][2], "age": user[0][3]})
+
+# @login_required # todo
+def authLogout(req):
+    id = "1" # todo: se sacaría de req.user
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    retrieveSessionSql = '''SELECT id, dateCreated FROM Session WHERE user_id=? AND date IS NULL AND time_played IS NULL;'''
+    session = cur.execute(retrieveSessionSql, (id)).fetchall()
+
+    date = datetime.datetime.now().replace(microsecond=0)
+    dateCreated = datetime.datetime.strptime(session[0][1], "%Y-%m-%d %H:%M:%S")
+    timePlayed = int((date - dateCreated).total_seconds())
+    endSession = '''UPDATE Session SET date = ?, time_played = ? where id = ?'''
+    cur.execute(endSession, (date, timePlayed, session[0][0]))
+    mydb.commit()
+    mydb.close()
+
+    return redirect('/')

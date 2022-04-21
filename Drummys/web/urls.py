@@ -18,4 +18,6 @@ urlpatterns = [
     path('user/signup', views.authSignup, name='authSignup'),
     path('user/login', views.authLogin, name='authLogin'),
     path('user/updateUser', views.updateUser, name='updateUser'),
+    path('user/getUser', views.getUser, name='getUser'),
+    path('user/logout', views.authLogout, name='authLogout'),
 ]
