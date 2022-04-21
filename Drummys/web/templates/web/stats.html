@@ -1,0 +1,38 @@
+{% extends "web/navbar-footer.html" %}
+{% block content %}
+<p>EL BLOCK SE LLAMA CONTENT Y ESTO LE DICE QUE EN LA PÁGINA DE NAVBAR-FOOTER ESTE BLOQUE REEMPLAZARA EL BLOQUE DENTRO
+DEL HTML PRINCIPAL QUE TENGA ESE NOMBRE</p>
+<section id="stats">
+    <div id="stat_description">
+        <h1>Stats</h1>
+        <p>In this section you'll find the global stats for the game and the website. To see personal stats you'll have to login and see the my stats section.</p>
+    </div>
+    <div id="graphs">
+        <div class="stat_pair">
+            <div id="table_div"></div>
+            <div id="level1"></div>
+        </div>
+        <div class="stat_pair">
+            <div id="level2"></div>
+            <div id="level3"></div>
+        </div>
+        <div class="stat_pair">
+            <div id="visitsChart"></div>
+            <div id="downloadChart"></div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const visits = {{ visits | safe }}
+        const downloads = {{ downloads | safe }}
+        const topscores = {{ topscores | safe }}
+        const level1 = {{ level1 | safe }}
+        const level2 = {{ level2 | safe }}
+        const level3 = {{ level3 |safe }}
+        google.charts.setOnLoadCallback(visitsChart);
+        google.charts.setOnLoadCallback(downloadChart);
+        google.charts.setOnLoadCallback(table);
+        google.charts.setOnLoadCallback(() => horizontalBars(level1, 1));
+        google.charts.setOnLoadCallback(() => horizontalBars(level2, 2));
+        google.charts.setOnLoadCallback(() => horizontalBars(level3, 3));    </script>
+</section>
+{% endblock %}
