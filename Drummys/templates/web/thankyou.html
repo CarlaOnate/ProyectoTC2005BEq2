@@ -6,20 +6,25 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"></head>
-    <link rel="shortcut icon" href="./assets/drummy.png"/>
-    <link rel="stylesheet" href="styles.css">
+    {% load static %}
+        <link rel="shortcut icon" href="{% static 'assets/drummy.png' %}"/>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
 <body>
     <div id="navbar">
         <div>
-            <a href="../index.html"><img class="navbar-imgs" src="assets/drummy.png"/></a>
+            <a href="index">
+                    {% load static %}
+                    <img class="navbar-imgs" src="{% static 'assets/drummy.png' %}"/></a>
         </div>
         <div>
-            <p><a href="../index.html" class="black">Home</a></p>
-            <p><a href="download.html" class="black">Download</a></p>
-            <p><a href="stats.html" class="black">Stats</a></p>
-            <p><a href="aboutus.html" class="black">About us</a></p>
-            <p><a href="login.html" class="orange">Login</a></p>
-            <img id="navbar-imgs" src="assets/drum.png"/>
+            <p><a href="index" class="black">Home</a></p>
+                <p><a href="download" class="black">Download</a></p>
+                <p><a href="stats" class="black">Stats</a></p>
+                <p><a href="aboutus" class="black">About us</a></p>
+                <p><a href="login" class="orange">Login</a></p>
+                {% load static %}
+                <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
         </div>
     </div>
     <section id="thankyou">
@@ -33,7 +38,7 @@
         </div>
         <div>
             <p>Already downloaded the game? Login to your account</p>
-            <a href="login.html"><button class="button-outline-orange button-small">Login</button></a>
+            <a href="login"><button class="button-outline-orange button-small">Login</button></a>
         </div>
     </section>
 </body>
