@@ -6,88 +6,6 @@ import datetime
 import sqlite3
 # Create your views here.
 
-def user_topscores(request):
-    usuario = request.GET['user_id']
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.name as Country, 
-Party.total_score, Party.time_played, Party.dateCreated FROM  Party
- INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id WHERE Party.user_id = ? 
- ORDER BY Party.total_score LIMIT 10 '''
-    rows = cur.execute(stringSQL, (str(usuario),))
-    if rows is None:
-        raise Http404("user_id does not exist")
-    else:
-        lista_salida = []
-        for r in rows:
-            print(r)
-            d = {}
-            d["party_id"] = r[0]
-            d["user_id"] = r[1]
-            d["username"] = r[2]
-            d["country"] = r[3]
-            d["total_score"] = r[4]
-            d["time_played"] = r[5]
-            d["date_created"] = r[6]
-            lista_salida.append(d)
-        j = dumps(lista_salida)
-    return HttpResponse(j, content_type="text/json-comment-filtered")
-
-def user_level(request):
-    usuario = request.GET['user_id']
-    level = request.GET['level']
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    stringSQL = '''SELECT Levels.id as Lvl_ID, User.id as User_ID,User.username, Countries.name as Country, 
-Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, Levels.dateCreated 
-FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
-Countries.id = User.country_id WHERE Levels.user_id = ?  AND Levels.difficulty= ? ORDER BY Levels.final_time  
-LIMIT 10'''
-    rows = cur.execute(stringSQL, (usuario, level, ))
-    if rows is None:
-        raise Http404("user_id or level does not exist")
-    else:
-        lista_salida = []
-        for r in rows:
-            print(r)
-            d = {}
-            d["level_id"] = r[0]
-            d["user_id"] = r[1]
-            d["username"] = r[2]
-            d["country"] = r[3]
-            d["country"] = r[4]
-            d["difficulty"] = r[5]
-            d["played_audio"] = r[6]
-            d["final_time"] = r[7]
-            d["penalties"] = r[8]
-            d["dateCreated"] = r[9]
-            lista_salida.append(d)
-        j = dumps(lista_salida)
-    return HttpResponse(j, content_type="text/json-comment-filtered")
-
-
-def user_sessions(request):
-    usuario = request.GET['user_id']
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    stringSQL = '''SELECT Session.id as Session_id, Session.user_id, Session.time_played, Session.dateCreated FROM  Session
-  WHERE Session.user_id = ?  ORDER BY Session.time_played  LIMIT 10'''
-    rows = cur.execute(stringSQL, (usuario,))
-    if rows is None:
-        raise Http404("user_id does not exist")
-    else:
-        lista_salida = []
-        for r in rows:
-            print(r)
-            d = {}
-            d["session_id"] = r[0]
-            d["user_id"] = r[1]
-            d["time_played"] = r[2]
-            d["dateCreated"] = r[3]
-            lista_salida.append(d)
-        j = dumps(lista_salida)
-    return HttpResponse(j, content_type="text/json-comment-filtered")
-
 @csrf_exempt
 def game_party(request):
     body_unicode = request.body.decode('utf-8')
@@ -128,7 +46,8 @@ def registerFirstLevel(req):
     #Since it's first level we need to create the party
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    dateCreated = datetime.datetime.now()
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    dateCreated.replace(microsecond=0)
 
     createPartySql = '''INSERT INTO Party (USER_ID, SESSION_ID, DATECREATED) VALUES (?, ?, ?)'''
     cur.execute(createPartySql, (userId, sessionId, dateCreated))
@@ -139,6 +58,7 @@ def registerFirstLevel(req):
     createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
     cur.execute(createLevel1Sql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
     mydb.commit()
+    mydb.close()
 
     return JsonResponse({"party_id": partyId})
 
@@ -153,11 +73,13 @@ def registerLevel(req):
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    dateCreated = datetime.datetime.now()
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    dateCreated.replace(microsecond=0)
 
     createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
     cur.execute(createLevelSql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
     mydb.commit()
+    mydb.close()
 
     return JsonResponse({"party_id": partyId})
 
@@ -196,7 +118,8 @@ def login(req):
         return Http404("No se encontró ese usuario")
     else:
         # If user exists create session and return session id
-        dateCreated = datetime.datetime.now()
+        dateCreated = datetime.datetime.now().replace(microsecond=0)
+        print('\n\nDateCreated =>', dateCreated, '\n\n')
         createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
         cur.execute(createSessionSql, (userId, dateCreated))
         retrieveSessionSql = '''SELECT id FROM Session WHERE user_id=? AND dateCreated=?;'''
@@ -215,4 +138,5 @@ def login(req):
                 "id": session[0][0]
             }
         })
-        return JsonResponse(json)
+        mydb.close()
+        return JsonResponse(json, safe=False)

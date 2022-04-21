@@ -3,12 +3,6 @@ const storage = window.localStorage
 google.charts.load('current', {'packages':['bar']});
 google.charts.load('current', {'packages':['corechart']});
 google.charts.load('current', {'packages':['table']});
-google.charts.setOnLoadCallback(visitsChart);
-google.charts.setOnLoadCallback(downloadChart);
-google.charts.setOnLoadCallback(() => horizontalBars(level1, 1));
-google.charts.setOnLoadCallback(() => horizontalBars(level2, 2));
-google.charts.setOnLoadCallback(() => horizontalBars(level3, 3));
-google.charts.setOnLoadCallback(table);
 
 $(document).ready(() => {
     $("#save-button").hide();
@@ -50,6 +44,8 @@ function visitsChart() {
     const data = google.visualization.arrayToDataTable(visits)
 
     const options = {
+        width: 500,
+        height: 500,
         chart: {
             title: 'Visits',
             subtitle: 'Last 10 visits',
@@ -68,6 +64,8 @@ function downloadChart() {
     const data = google.visualization.arrayToDataTable(downloads)
 
     const options = {
+        width: 500,
+        height: 500,
         title: 'Downloads by country'
     };
 
@@ -105,4 +103,20 @@ function table () {
     var table = new google.visualization.Table(document.getElementById('table_div'));
 
     table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+}
+
+function lineChart () {
+    var data = google.visualization.arrayToDataTable(sessions);
+
+    var options = {
+        width: 500,
+        height: 500,
+        title: 'Session Times',
+        curveType: 'function',
+        legend: { position: 'none' }
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+    chart.draw(data, options);
 }

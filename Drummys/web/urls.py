@@ -11,7 +11,7 @@ urlpatterns = [
     path('aboutus', views.aboutus, name='aboutus'),
     path('download', views.download, name='download'),
     path('download-logged', views.download_logged, name='download-logged'),
-    path('my-stats', views.my_stats, name='my-stats'),
+    path('my-stats', views.myStats, name='myStats'),
     path('thankyou', views.thankyou, name='thankyou'),
     path('stats', views.stats, name='stats'),
     #  --- API ---

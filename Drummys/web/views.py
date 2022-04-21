@@ -28,6 +28,7 @@ Party.total_score, Party.time_played, Party.dateCreated FROM  Party
             d = [r[2], r[3], r[4], r[5], date]
             lista_salida.append(d)
         j = dumps(lista_salida)
+    mydb.close()
     return j
 
 def graficaGlobalLevel(level):
@@ -51,11 +52,78 @@ LIMIT 10'''
 
     title = 'Graph Level ' + str(level)
     modified_title = dumps(title)
-    print('\n\nj =>', j ,'\n\n')
+    mydb.close()
     return({
         'values': j,
         'title': modified_title
     })
+
+def user_level(level, usuario):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT Levels.id as Lvl_ID, User.id as User_ID,User.username, Countries.name as Country, 
+    Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, Levels.dateCreated 
+    FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
+    Countries.id = User.country_id WHERE Levels.user_id = ?  AND Levels.difficulty= ? ORDER BY Levels.final_time  
+    LIMIT 10'''
+    rows = cur.execute(stringSQL, (usuario, level, ))
+    if rows is None:
+        raise Http404("user_id or level does not exist")
+    else:
+        lista_salida = [['Date', 'Time (s)']]
+        for r in rows:
+            date = datetime.datetime.strptime(r[9], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+            d = [date, r[7]]
+            lista_salida.append(d)
+        j = dumps(lista_salida)
+    title = 'Graph Level ' + str(level)
+    modified_title = dumps(title)
+    mydb.close()
+    return({
+        'values': j,
+        'title': modified_title
+    })
+
+def user_sessions(usuario):
+    # usuario = request.GET['user_id']
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT SUM(time_played) AS total, date FROM Session WHERE Session.user_id = ?
+    Group by date Order by time_played asc'''
+    rows = cur.execute(stringSQL, (usuario,))
+    if rows is None:
+        raise Http404("user_id does not exist")
+    else:
+        lista_salida = [['Date', 'Time (s)']]
+        for r in rows:
+            date = datetime.datetime.strptime(r[1], "%Y-%m-%d").strftime("%A %d. %b")
+            d = [date, r[0]]
+            lista_salida.append(d)
+        j = dumps(lista_salida)
+    mydb.close()
+    return j
+
+def user_topscores(usuario):
+    # usuario = request.GET['user_id']
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.name as Country, 
+Party.total_score, Party.time_played, Party.dateCreated FROM  Party
+ INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id WHERE Party.user_id = ? 
+ ORDER BY Party.total_score LIMIT 10 '''
+    rows = cur.execute(stringSQL, (str(usuario),))
+    if rows is None:
+        raise Http404("user_id does not exist")
+    else:
+        lista_salida = [["Username", "Country", "Total Score", "Time Played", "Date"]]
+        for r in rows:
+            print('\n\n date =>', r[6])
+            date = datetime.datetime.strptime(r[6], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+            d = [r[2], r[3], r[4], r[5], date]
+            lista_salida.append(d)
+        j = dumps(lista_salida)
+    mydb.close()
+    return j
 
 def user_visits(req):
     mydb = sqlite3.connect("DrummyDB.db")
@@ -70,6 +138,7 @@ def user_visits(req):
             date = datetime.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
             data.append([date, r[0]])
         dataJson = dumps(data)
+    mydb.close()
     return dataJson
 
 def downloads(req):
@@ -85,6 +154,7 @@ def downloads(req):
         for r in rows:
             data.append([r[1], r[0]])
         dataJson = dumps(data)
+    mydb.close()
     return dataJson
 
 def stats(req):
@@ -103,6 +173,23 @@ def stats(req):
         "level3": level3Global,
     })
 
+def myStats(req):
+    topscores = user_topscores(1) # seria pasar el req.user
+    sessions = user_sessions(1) # seria pasar el req.user
+    level1 = user_level(1, 1) # seria pasar el req.user
+    level2 = user_level(2, 1) # seria pasar el req.user
+    level3 = user_level(3, 1) # seria pasar el req.user
+    print('\n\n topscores =>', topscores, '\n\n')
+    print('\n\n sessions =>', sessions, '\n\n')
+    print('\n\n level =>', level1, '\n\n')
+    return render(req, 'web/my-stats.html', {
+        "topscores": topscores,
+        "sessions": sessions,
+        "level1": level1,
+        "level2": level2,
+        "level3": level3,
+    })
+
 # -- KINK OF STATIC VIEWS --
 def aboutus(request):
     return render(request, 'aboutus.html')
@@ -115,9 +202,6 @@ def download(request):
 
 def download_logged(request):
     return render(request, 'download-logged.html')
-
-def my_stats(request):
-    return render(request, 'my-stats.html')
 
 def thankyou(request):
     return render(request, 'thankyou.html')
@@ -142,11 +226,13 @@ def authLogin(req):
     userCountryId = user[0][4]
     userCountryNickname = user[0][5]
 
+    mydb.close()
+
     if (user is None):
         return Http404("No se encontró ese usuario")
     else:
         # If user exists create session and return session id
-        dateCreated = datetime.datetime.now()
+        dateCreated = datetime.datetime.now().replace(microsecond=0)
         createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
         cur.execute(createSessionSql, (userId, dateCreated))
         retrieveSessionSql = '''SELECT id FROM Session WHERE user_id=? AND dateCreated=?;'''
@@ -181,7 +267,7 @@ def authSignup(req):
     retrieveUserSql = '''SELECT id FROM User WHERE username=? AND password=?'''
     user = cur.execute(retrieveUserSql, (username, password)).fetchall()
     mydb.commit()
-    # return JsonResponse({"user": {"id": user[0][0]}})
+    mydb.close()
     return redirect('login')
 
 
@@ -195,5 +281,6 @@ def updateUser(req):
     updateUserSql = '''UPDATE User SET username = ? WHERE id=?;'''
     cur.execute(updateUserSql, (username, id))
     mydb.commit()
+    mydb.close()
 
     return JsonResponse({"msg": 200})

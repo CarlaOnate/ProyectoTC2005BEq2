@@ -1,56 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Drummy's Adventures</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-        <link rel="shortcut icon" href="../../../static/assets/drummy.png"/>
-        <link rel="stylesheet" href="../../../static/styles.css">
-    </head>
-    <body>
-    <div id="navbar">
-        <div>
-            <a href="../index.html"><img class="navbar-imgs" src="../../../static/assets/drummy.png"/></a>
+{% extends "web/navbar-footer.html" %}
+{% block content %}
+    <section id="stats">
+        <div id="stat_description">
+            <h1>Personal Stats</h1>
         </div>
-        <div>
-            <p><a href="../index.html" class="black">Home</a></p>
-            <p><a href="download-logged.html" class="black">Download</a></p>
-            <p><a href="my-stats.html" class="orange">My stats</a></p>
-            <p><a href="dashboard.html" class="black">Profile</a></p>
-            <div onclick="showSignOutButton()">
-                <img class="navbar-imgs" src="../../../static/assets/drum.png"/>
-                <div id="sign-out">
-                    <a href="download.html">Sign-out</a>
-                </div>
+        <div id="graphs">
+            <div class="stat_pair">
+                <div id="table_div"></div>
+                <div id="level1"></div>
+            </div>
+            <div class="stat_pair">
+                <div id="level2"></div>
+                <div id="level3"></div>
+            </div>
+            <div class="stat_pair">
+                <div id="curve_chart"></div>
             </div>
         </div>
-    </div>
-
-        <section id="stats">
-            <div id="stat_description">
-                <h1>Personal Stats</h1>
-            </div>
-            <div id="graphs">
-                
-                <div class="stat_pair">
-                    <div class="gpWtitle"><h2>Top Scores</h2> <img src="../../../static/assets/stat1.png"></div>
-                    <div class="gpWtitle"><h2>Top Scores (Level 1)</h2><img src="../../../static/assets/stat2.png"></div>
-                </div>
-
-                <div class="stat_pair">
-                    <div class="gpWtitle"><h2>Top Scores (Level 2)</h2><img src="../../../static/assets/stat3.png"></div>
-                    <div class="gpWtitle"><h2>Top Scores (Level 3)</h2><img src="../../../static/assets/stat4.png"></div>
-                </div>
-
-                <div class="stat_pair">
-                    <div class="gpWtitle"><h2>Session times</h2><img src="../../../static/assets/stat7.png"></div>
-                </div>
-
-            </div>
-            
-        </section>
-       
-    </body>
-</html>
+        <script type="text/javascript">
+            const topscores = {{ topscores | safe }}
+            const sessions = {{ sessions | safe }}
+            const level1 = {{ level1 | safe }}
+            const level2 = {{ level2 | safe }}
+            const level3 = {{ level3 | safe }}
+            google.charts.setOnLoadCallback(table);
+            google.charts.setOnLoadCallback(lineChart);
+            google.charts.setOnLoadCallback(() => horizontalBars(level1, 1));
+            google.charts.setOnLoadCallback(() => horizontalBars(level2, 2));
+            google.charts.setOnLoadCallback(() => horizontalBars(level3, 3));
+        </script>
+    </section>
+{% endblock %}
