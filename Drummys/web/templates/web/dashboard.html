@@ -1,0 +1,34 @@
+{% extends "web/navbar-footer.html" %}
+{% block content %}
+<section id="dashboard">
+    <div>
+        <h2>Profile</h2>
+    </div>
+    <div>
+        <div id="username">
+            <p class="highlight">Username:</p>
+            <div id="username-text-div">
+                <p id="username-text">username</p>
+            </div>
+        </div>
+        <button id="edit-button" class="button-outline-orange button-small" onclick="editUsername()">Edit</button>
+    </div>
+    <div>
+        <p class="highlight">Personal data:</p>
+        <div>
+            <div>
+                <p class="bold-text">Email</p>
+                <p>user@email.com</p>
+            </div>
+            <div>
+                <p class="bold-text">Country</p>
+                <p>México</p>
+            </div>
+            <div>
+                <p class="bold-text">Age</p>
+                <p>19</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

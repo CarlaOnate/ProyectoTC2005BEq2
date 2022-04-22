@@ -1,0 +1,28 @@
+{% extends "web/navbar-footer.html" %}
+{% block content %}
+<div id="navbar">
+    <div>
+        <a href="../index.html"><img class="navbar-imgs" src="../../../static/assets/drummy.png"/></a>
+    </div>
+    <div>
+        <p><a href="/" class="black">Home</a></p>
+        <p><a href="download-logged" class="orange">Download</a></p>
+        <p><a href="stats" class="black">My stats</a></p>
+        <p><a href="dashboard" class="black">Profile</a></p>
+        <div onclick="showSignOutButton()">
+            <img class="navbar-imgs" src="../../../static/assets/drum.png"/>
+            <div id="sign-out">
+                <a href="download">Sign-out</a>
+            </div>
+        </div>
+    </div>
+</div>
+<section id="download-logged">
+    <h2>Download the game</h2>
+    <p class="light-text">Just click the download button and your download should start automatically.</p>
+    <div>
+        <p><strong>Click here to download the game!</strong></p>
+        <button class="button-filled">Download</button>
+    </div>
+</section>
+{% endblock %}
