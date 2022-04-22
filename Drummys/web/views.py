@@ -9,16 +9,25 @@ import collections
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    ip = request.META.get('HTTP_HOST')
+    device = request.META.get('HTTP_USER_AGENT')
+    stringSQL = '''INSERT INTO Visit (ip, device, dateCreated) VALUES(?, ?, ?)'''
+    cur.execute(stringSQL, (ip, device, dateCreated))
+    mydb.commit()
+    mydb.close()
+    return render(request, 'web/index.html')
 
 #  --- GRAPHS ---
 def topscores_global(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.nickname as Country, 
-Party.total_score, Party.time_played, Party.dateCreated FROM  Party
- INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
- ORDER BY Party.total_score LIMIT 10 '''
+    Party.total_score, Party.time_played, Party.dateCreated FROM  Party
+    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
+    ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL)
     if rows is None:
         raise Http404("user_id does not exist")
@@ -193,19 +202,32 @@ def myStats(req):
 
 # -- KINK OF STATIC VIEWS --
 def aboutus(request):
-    return render(request, 'aboutus.html')
+    return render(request, 'web/aboutus.html')
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'web/dashboard.html')
 
 def download(request):
-    return render(request, 'download.html')
+    return render(request, 'web/download.html')
 
 def download_logged(request):
-    return render(request, 'download-logged.html')
+    return render(request, 'web/download-logged.html')
 
 def thankyou(request):
-    return render(request, 'thankyou.html')
+    return render(request, 'web/thankyou.html')
+
+def signup(req):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    findUserSql = '''SELECT * From Countries'''
+    countries = cur.execute(findUserSql).fetchall()
+    countriesArr = []
+    for el in countries:
+        countriesArr.append(el[2])
+    countriesJson = dumps(countriesArr)
+    mydb.close()
+    return render(req, 'web/signup.html', {"countries": countriesJson})
 
 # ------ AUTH ---------
 def authLogin(req):
@@ -263,13 +285,17 @@ def authSignup(req):
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
+
+    countrySql = '''SELECT id FROM Countries WHERE name=?;'''
+    countryId = cur.execute(countrySql, (country,)).fetchall()
+
     stringSQL = '''INSERT INTO User (username, country_id, password, age) VALUES (?, ?, ?, ?)'''
-    cur.execute(stringSQL, (username, age, password, country,))
+    cur.execute(stringSQL, (username,  countryId[0][0], password, age))
     retrieveUserSql = '''SELECT id FROM User WHERE username=? AND password=?'''
     user = cur.execute(retrieveUserSql, (username, password)).fetchall()
     mydb.commit()
     mydb.close()
-    return redirect('login')
+    return redirect('thankyou')
 
 # @login_required # todo
 def updateUser(req):
