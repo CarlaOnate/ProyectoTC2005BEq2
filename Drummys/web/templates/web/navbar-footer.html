@@ -15,11 +15,44 @@
     <script type="text/javascript" src="{%static 'js/index.js'%}"></script>
 </head>
 <body>
-    <p>Aquí va el nav bar y el footer</p>
+    <div id="navbar">
+        {% block navbar %}
+            <div>
+                <a href="../index.html"><img class="navbar-imgs" src="../../web/assets/drummy.png"/></a>
+            </div>
+            <div>
+                <p><a href="../index.html" class="black">Home</a></p>
+                <p><a href="download.html" class="black">Download</a></p>
+                <p><a id="stats-navbar" href="../../web/templates/web/stats.html" class="black">Stats</a></p>
+                <p><a href="aboutus.html" class="black">About us</a></p>
+                {% block navbar-extension %} 
+                    <p><a href="login.html" class="black">Login</a></p> 
+                {% endblock %}
+                <img id="navbar-imgs" src="../assets/drum.png"/>
+            </div> 
+        {% endblock %}
+    </div>
     <p>Codigo del navbar</p>
     {% block content %}
         <p>dentro de este bloque se pondrá lo que tiene que ir en la página </p>
     {% endblock %}
     <p>Código del footer</p>
+    <div id="footer">
+        {% block footer %} 
+        <section id="footer-main">
+            <div class="footer-main-top">
+              <div class="text-box">
+                <h1>Download the Game</h1>
+                <h2>Try this game for yourself!</h2>
+              </div>
+              <button type="button" name="Download">Download the Game</button>
+              <img src="assets/drummy.png">
+            </div>
+            <div class="footer-main-bottom">
+            </div>
+          </section>
+        {% endblock %}
+
+    </div>
 </body>
 </html>
