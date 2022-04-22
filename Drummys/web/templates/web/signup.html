@@ -21,8 +21,8 @@
         <input placeholder="Password" name="password"/>
       </div>
       <div>
-        <label class="bold-text">Where are your from?</label>
-        <input placeholder="Country" name="country"/>
+        <label for="country-input" class="bold-text">Where are your from?</label>
+        <input id="country-input" placeholder="Country" name="country"/>
       </div>
       <div>
         <label class="bold-text">Confirm your password</label>
@@ -35,5 +35,8 @@
     <p>Already have an account? Login here</p>
     <button class="button-outline-orange button-small"><a href="login.html">Login</a></button>
   </div>
+  <script type="text/javascript">
+    countries = {{ countries | safe }}
+  </script>
 </section>
 {% endblock %}

@@ -3,6 +3,7 @@ const storage = window.localStorage
 google.charts.load('current', {'packages':['bar']});
 google.charts.load('current', {'packages':['corechart']});
 google.charts.load('current', {'packages':['table']});
+let countries = [];
 
 $(document).ready(() => {
     $("#save-button").hide();
@@ -40,6 +41,15 @@ const handleInputChange = () => {
     localStorage['username'] = $("#username-input").val();
 }
 
+//Signup
+$( function() {
+    $("#country-input").autocomplete({
+        source: countries
+    });
+});
+
+
+// Graphs
 function visitsChart() {
     const data = google.visualization.arrayToDataTable(visits)
 

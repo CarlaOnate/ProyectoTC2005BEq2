@@ -216,6 +216,20 @@ def download_logged(request):
 def thankyou(request):
     return render(request, 'web/thankyou.html')
 
+def signup(req):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    findUserSql = '''SELECT * From Countries'''
+    countries = cur.execute(findUserSql).fetchall()
+    print('\n\n countries =>', countries, '\n\n')
+    countriesArr = []
+    for el in countries:
+        countriesArr.append(el[2])
+    countriesJson = dumps(countriesArr)
+    mydb.close()
+    return render(req, 'web/signup.html', {"countries": countriesJson})
+
 # ------ AUTH ---------
 def authLogin(req):
     username = req.POST["username"]
@@ -275,8 +289,12 @@ def authSignup(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
+    countrySql = '''SELECT id FROM Countries WHERE name=?;'''
+    countryId = cur.execute(countrySql, (country,)).fetchall()
+    print('\n\n', countryId, '\n\n')
+
     stringSQL = '''INSERT INTO User (username, country_id, password, age) VALUES (?, ?, ?, ?)'''
-    cur.execute(stringSQL, (username, age, password, country,))
+    cur.execute(stringSQL, (username,  countryId[0][0], password, age))
     retrieveUserSql = '''SELECT id FROM User WHERE username=? AND password=?'''
     user = cur.execute(retrieveUserSql, (username, password)).fetchall()
     mydb.commit()
