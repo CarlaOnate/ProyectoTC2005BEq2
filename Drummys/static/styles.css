@@ -130,6 +130,11 @@ input {
     font-weight: 500;
 }
 
+.error {
+    color: #de454a;
+    font-weight: bold;
+}
+
 /*Specific styles*/
 
 #navbar {

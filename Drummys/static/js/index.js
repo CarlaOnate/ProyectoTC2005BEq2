@@ -5,8 +5,25 @@ google.charts.load('current', {'packages':['corechart']});
 google.charts.load('current', {'packages':['table']});
 let countries = [];
 
+function checkSamePassword () {
+    const password = document.getElementById("signup-password").value
+    const confirmPassword = document.getElementById("confirm-password").value
+    if(password === confirmPassword){
+        $("#error-msg").remove();
+        document.getElementById("signup-submit").disabled = false;
+    } else {
+        $("#signup form").append("<p id='error-msg' class='error'>Las contraseñas no coinciden</p>")
+    }
+}
+
+function removeOnChange () {
+    document.getElementById("confirm-password").removeEventListener('change', checkSamePassword)
+}
+
 $(document).ready(() => {
     $("#save-button").hide();
+    document.getElementById("signup-submit").disabled = true;
+    document.getElementById("confirm-password").addEventListener('change', checkSamePassword)
 })
 
 const showSignOutButton = () => {
@@ -20,7 +37,7 @@ const showSignOutButton = () => {
     }
 }
 
-const editUsername = () => {
+function editUsername () {
     localStorage['username'] = $("#username-text").text();
     $("#edit-button").hide();
     $("#username-text").hide();
@@ -29,7 +46,7 @@ const editUsername = () => {
     $("#username-text-div").append('<button id="save-button" class="button-filled-green" onclick="saveUsername()">Save</button>')
 }
 
-const saveUsername = () => {
+function saveUsername () {
     $("#username-input").remove();
     $("#save-button").remove();
     $("#username-text").text(localStorage.username)
@@ -37,17 +54,16 @@ const saveUsername = () => {
     $("#edit-button").show();
 }
 
-const handleInputChange = () => {
+function handleInputChange () {
     localStorage['username'] = $("#username-input").val();
 }
 
 //Signup
-$( function() {
+$(function() {
     $("#country-input").autocomplete({
         source: countries
     });
 });
-
 
 // Graphs
 function visitsChart() {

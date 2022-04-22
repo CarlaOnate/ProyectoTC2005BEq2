@@ -222,7 +222,6 @@ def signup(req):
 
     findUserSql = '''SELECT * From Countries'''
     countries = cur.execute(findUserSql).fetchall()
-    print('\n\n countries =>', countries, '\n\n')
     countriesArr = []
     for el in countries:
         countriesArr.append(el[2])
@@ -284,14 +283,11 @@ def authSignup(req):
     password = req.POST["password"]
     country = req.POST["country"]
 
-    print('\n\n', username, age, password, country, '\n\n')
-
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
     countrySql = '''SELECT id FROM Countries WHERE name=?;'''
     countryId = cur.execute(countrySql, (country,)).fetchall()
-    print('\n\n', countryId, '\n\n')
 
     stringSQL = '''INSERT INTO User (username, country_id, password, age) VALUES (?, ?, ?, ?)'''
     cur.execute(stringSQL, (username,  countryId[0][0], password, age))

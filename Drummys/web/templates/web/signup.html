@@ -10,26 +10,26 @@
     <div>
       <div>
         <label class="bold-text">Enter your username</label>
-        <input placeholder="Username" name="username"/>
+        <input placeholder="Username" type="text" name="username"/>
       </div>
       <div>
         <label class="bold-text">How old are you?</label>
-        <input placeholder="Age" name="age"/>
-      </div>
-      <div>
-        <label class="bold-text">Enter your password</label>
-        <input placeholder="Password" name="password"/>
+        <input placeholder="Age" type="text" name="age"/>
       </div>
       <div>
         <label for="country-input" class="bold-text">Where are your from?</label>
-        <input id="country-input" placeholder="Country" name="country"/>
+        <input id="country-input" type="text" placeholder="Country" name="country"/>
+      </div>
+      <div>
+        <label class="bold-text">Enter your password</label>
+        <input id="signup-password" type="text" placeholder="Password" name="password"/>
       </div>
       <div>
         <label class="bold-text">Confirm your password</label>
-        <input placeholder="Confirm password" name="confirmPassword"/>
+        <input id="confirm-password" type="text" placeholder="Confirm password" name="confirmPassword"/>
       </div>
     </div>
-    <button class="button-filled">Signup</button>
+    <button id="signup-submit" type="submit" class="button-filled" onclick="removeOnChange()">Signup</button>
   </form>
   <div>
     <p>Already have an account? Login here</p>
