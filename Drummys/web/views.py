@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .models import CustomUser, Countries, Session
 from json import loads,dumps
+from django.contrib.auth import authenticate, login
 from django.http import Http404
 import datetime
 import sqlite3
@@ -26,7 +28,7 @@ def topscores_global(request):
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.nickname as Country, 
     Party.total_score, Party.time_played, Party.dateCreated FROM  Party
-    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
+    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country 
     ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL)
     if rows is None:
@@ -48,7 +50,7 @@ def graficaGlobalLevel(level):
 Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, 
 Levels.dateCreated 
 FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
-Countries.id = User.country_id WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
+Countries.id = User.country WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
 LIMIT 10'''
     rows = cur.execute(stringSQL, (level,))
     if rows is None:
@@ -74,7 +76,7 @@ def user_level(level, usuario):
     stringSQL = '''SELECT Levels.id as Lvl_ID, User.id as User_ID,User.username, Countries.name as Country, 
     Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, Levels.dateCreated 
     FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
-    Countries.id = User.country_id WHERE Levels.user_id = ?  AND Levels.difficulty= ? ORDER BY Levels.final_time  
+    Countries.id = User.country WHERE Levels.user_id = ?  AND Levels.difficulty= ? ORDER BY Levels.final_time  
     LIMIT 10'''
     rows = cur.execute(stringSQL, (usuario, level, ))
     if rows is None:
@@ -119,7 +121,7 @@ def user_topscores(usuario):
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.name as Country, 
 Party.total_score, Party.time_played, Party.dateCreated FROM  Party
- INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id WHERE Party.user_id = ? 
+ INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country WHERE Party.user_id = ? 
  ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL, (str(usuario),))
     if rows is None:
@@ -155,7 +157,7 @@ def downloads(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT COUNT(*), Countries.name FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id
-    AND Countries.id = User.country_id GROUP BY Countries.name'''
+    AND Countries.id = User.country GROUP BY Countries.name'''
     rows = cur.execute(stringSQL)
     if rows is None:
         raise Http404("List not available")
@@ -235,33 +237,16 @@ def authLogin(req):
     password = req.POST["password"]
     print('\n\n', username, password, '\n\n')
 
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    # Find user with that username and password
-    findUserSql = '''SELECT User.id, User.username, User.age, Countries.name, Countries.id, Countries.nickname 
-    FROM User INNER JOIN Countries ON Countries.id=User.country_id WHERE User.username=? AND User.password=?'''
-    # (id, username, password, age, countryName, countryId, countryNickname)
-    user = cur.execute(findUserSql, (username, password)).fetchall()
-    userId = user[0][0]
-    userUsername = user[0][1]
-    userAge = user[0][2]
-    userCountryName = user[0][3]
-    userCountryId = user[0][4]
-    userCountryNickname = user[0][5]
+    authenticatedUsername = authenticate(req, username=username, password=password)
 
-    mydb.close()
-
-    if (user is None):
-        return Http404("No se encontró ese usuario")
-    else:
-        # If user exists create session and return session id
+    if authenticatedUsername is not None:
+        user = CustomUser.objects.get(username=authenticatedUsername)
+        login(req, authenticatedUsername)
+        print('\n\n req.user after login =>', req.user, '\n\n')
         dateCreated = datetime.datetime.now().replace(microsecond=0)
-        createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
-        cur.execute(createSessionSql, (userId, dateCreated))
-        retrieveSessionSql = '''SELECT id FROM Session WHERE user_id=? AND dateCreated=?;'''
-        session = cur.execute(retrieveSessionSql, (str(userId), dateCreated)).fetchall()
-        mydb.commit()
-        json = dumps({
+        print('\n\n dateCreated =>', dateCreated, '\n\n')
+        session = Session.objects.create(user_id=user.id, datecreated=dateCreated)
+        '''json = dumps({
             "user": {
                 "id": userId,
                 "username": userUsername,
@@ -273,8 +258,11 @@ def authLogin(req):
             "session": {
                 "id": session[0][0]
             }
-        })
+        })'''
         return redirect('dashboard')
+    else:
+        # Return an 'invalid login' error message.
+        return Http404("No se encontró ese usuario")
 
 
 def authSignup(req):
@@ -283,26 +271,16 @@ def authSignup(req):
     password = req.POST["password"]
     country = req.POST["country"]
 
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-
-    countrySql = '''SELECT id FROM Countries WHERE name=?;'''
-    countryId = cur.execute(countrySql, (country,)).fetchall()
-
-    stringSQL = '''INSERT INTO User (username, country_id, password, age) VALUES (?, ?, ?, ?)'''
-    cur.execute(stringSQL, (username,  countryId[0][0], password, age))
-    retrieveUserSql = '''SELECT id FROM User WHERE username=? AND password=?'''
-    user = cur.execute(retrieveUserSql, (username, password)).fetchall()
-    mydb.commit()
-    mydb.close()
+    countryInstance = Countries.objects.get(name=country)
+    user = CustomUser.objects.create_user(username=username, country=countryInstance, password=password, age=age)
+    user.save()
     return redirect('thankyou')
 
 # @login_required # todo
 def updateUser(req):
-    # id = req.POST["id"] # todo: se saca de req.user
-    id = "1"
+    user = CustomUser.objects.get(username=authenticatedUsername)
+    id = user.id
     username = req.POST["username"]
-    # User needs to be logged in -> missing logic
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
@@ -321,7 +299,7 @@ def getUser(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     getUserSql = '''SELECT User.id, User.username, Countries.name as Country, User.age FROM User
-    , Countries WHERE User.id = ? AND Countries.id = User.country_id;'''
+    , Countries WHERE User.id = ? AND Countries.id = User.country;'''
     user = cur.execute(getUserSql, (id)).fetchall()
     mydb.commit()
     mydb.close()

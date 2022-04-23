@@ -1,6 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads,dumps
+from web.models import CustomUser, Countries, Session
+from django.contrib.auth import authenticate, login
 from django.http import Http404
 import datetime
 import sqlite3
@@ -95,48 +97,29 @@ def level(req):
         return JsonResponse({"error": "Numero de dificultad no es valida"})
 
 @csrf_exempt
-def login(req):
+def authLogin(req):
     username = req.POST["username"]
     password = req.POST["password"]
-    print('\n\n', username, password, '\n\n')
-
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    # Find user with that username and password
-    findUserSql = '''SELECT User.id, User.username, User.age, Countries.name, Countries.id, Countries.nickname 
-    FROM User INNER JOIN Countries ON Countries.id=User.country_id WHERE User.username=? AND User.password=?'''
-    # (id, username, password, age, countryName, countryId, countryNickname)
-    user = cur.execute(findUserSql, (username, password)).fetchall()
-    userId = user[0][0]
-    userUsername = user[0][1]
-    userAge = user[0][2]
-    userCountryName = user[0][3]
-    userCountryId = user[0][4]
-    userCountryNickname = user[0][5]
-
-    if (user is None):
-        return Http404("No se encontró ese usuario")
-    else:
-        # If user exists create session and return session id
+    authenticatedUsername = authenticate(req, username=username, password=password)
+    if authenticatedUsername is not None:
+        user = CustomUser.objects.get(username=authenticatedUsername)
+        userCountry = Countries.objects.get(pk=user.country.id)
+        login(req, authenticatedUsername)
         dateCreated = datetime.datetime.now().replace(microsecond=0)
-        print('\n\nDateCreated =>', dateCreated, '\n\n')
-        createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
-        cur.execute(createSessionSql, (userId, dateCreated))
-        retrieveSessionSql = '''SELECT id FROM Session WHERE user_id=? AND dateCreated=?;'''
-        session = cur.execute(retrieveSessionSql, (str(userId), dateCreated)).fetchall()
-        mydb.commit()
+        session = Session.objects.create(user_id=user.id, datecreated=dateCreated)
         json = dumps({
             "user": {
-                "id": userId,
-                "username": userUsername,
-                "age": userAge,
-                "countryId": userCountryId,
-                "countryName": userCountryName,
-                "countryNickname": userCountryNickname,
+                "id": user.id,
+                "username": user.username,
+                "age": user.age,
+                "countryId": userCountry.id,
+                "countryName": userCountry.name,
+                "countryNickname": userCountry.nickname,
             },
             "session": {
-                "id": session[0][0]
+                "id": session.id
             }
         })
-        mydb.close()
         return JsonResponse(json, safe=False)
+    else:
+        return JsonResponse({"error": "Algo salió mal, upsi"})
