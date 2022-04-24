@@ -222,6 +222,9 @@ def thankyou(request):
 def signup(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
+    allUsernames = list(CustomUser.objects.all().values_list('username', flat=True))
+
+    print('\n\n allUsernames =>', allUsernames, allUsernames[0], '\n\n')
 
     findUserSql = '''SELECT * From Countries'''
     countries = cur.execute(findUserSql).fetchall()
@@ -230,7 +233,7 @@ def signup(req):
         countriesArr.append(el[2])
     countriesJson = dumps(countriesArr)
     mydb.close()
-    return render(req, 'web/signup.html', {"countries": countriesJson})
+    return render(req, 'web/signup.html', {"countries": countriesJson, "usernames": allUsernames})
 
 # ------ AUTH ---------
 def authLogin(req):
