@@ -15,6 +15,7 @@ urlpatterns = [
     path('thankyou', views.thankyou, name='thankyou'),
     path('stats', views.stats, name='stats'),
     #  --- API ---
+    path('api/download', views.addDownload, name='addDownload'),
     path('user/signup', views.authSignup, name='authSignup'),
     path('user/login', views.authLogin, name='authLogin'),
     path('user/updateUser', views.updateUser, name='updateUser'),

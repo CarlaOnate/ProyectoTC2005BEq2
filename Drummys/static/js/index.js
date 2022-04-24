@@ -5,6 +5,12 @@ google.charts.load('current', {'packages':['corechart']});
 google.charts.load('current', {'packages':['table']});
 let countries = [];
 
+function onDownload () {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/api/download", true);
+    request.send()
+}
+
 function checkSamePassword () {
     const password = document.getElementById("signup-password").value
     const confirmPassword = document.getElementById("confirm-password").value

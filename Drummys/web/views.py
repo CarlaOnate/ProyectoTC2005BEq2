@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import CustomUser, Countries, Session
+from .models import CustomUser, Countries, Session, Download
 from json import loads,dumps
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 import datetime
 import sqlite3
@@ -276,7 +277,7 @@ def authSignup(req):
     user.save()
     return redirect('thankyou')
 
-# @login_required # todo
+# @login_required
 def updateUser(req):
     user = CustomUser.objects.get(username=authenticatedUsername)
     id = user.id
@@ -324,3 +325,12 @@ def authLogout(req):
     mydb.close()
 
     return redirect('/')
+
+# --- API ---
+@login_required
+def addDownload(req):
+    device = req.META.get('HTTP_USER_AGENT')
+    user = CustomUser.objects.get(username=req.user)
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    Download.objects.create(user_id= user.id, device=device, datecreated=dateCreated)
+    return JsonResponse({"msg": 200})
