@@ -21,9 +21,9 @@
   <form method="POST" action="http://127.0.0.1:8000/user/signup">
     {% csrf_token %}
     <div>
-      <div>
+      <div id="signup-username-div">
         <label class="bold-text">Enter your username</label>
-        <input required placeholder="Username" type="text" name="username"/>
+        <input required id="signup-username" placeholder="Username" type="text" name="username"/>
       </div>
       <div>
         <label class="bold-text">How old are you?</label>
@@ -49,7 +49,9 @@
     <button class="button-outline-orange button-small"><a href="{% url 'login' %}">Login</a></button>
   </div>
   <script type="text/javascript">
+    console.log({{ usernames | safe }})
     countries = {{ countries | safe }}
+    usernames = {{ usernames | safe }}
   </script>
 </section>
 {% endblock %}

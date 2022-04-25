@@ -31,6 +31,7 @@
       <button class="button-outline-orange button-small" id="login-button">Login</button></a>
     </div>
   </form>
+  <p id="error-msg" class="error">{{ error | safe }}</p>
   <div>
     <p>You don't have an account? Create one here!</p>
     <a href="{% url 'signup' %}"><button class="button-outline-orange button-small">Sign Up</button></a>

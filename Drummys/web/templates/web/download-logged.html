@@ -15,7 +15,8 @@
     <p class="light-text">Just click the download button and your download should start automatically.</p>
     <div>
         <p><strong>Click here to download the game!</strong></p>
-        <button class="button-filled">Download</button>
+        {% load static %}
+        <a href="{% static 'download/PostAgregarUsr.cs' %}" type="download"><button onclick="onDownload()" class="button-filled">Download</button></a>
     </div>
 </section>
 {% endblock %}

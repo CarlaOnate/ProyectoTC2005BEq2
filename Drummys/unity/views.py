@@ -1,6 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from json import loads, dumps
+from json import loads,dumps
+from web.models import CustomUser, Countries, Session
+from django.contrib.auth import authenticate, login
 from django.http import Http404
 import datetime
 import sqlite3
@@ -95,50 +97,24 @@ def level(req):
         return JsonResponse({"error": "Numero de dificultad no es valida"})
 
 @csrf_exempt
-def login(req):
-    body_unicode = req.body.decode('utf-8')
-    body = loads(body_unicode)
-
-    username = body["username"]
-    password = body["password"]
-    print('\n\n', username, password, '\n\n')
-
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-
-    # Find user with that username and password
-    findUserSql = '''SELECT User.id, User.username, User.age, Countries.name, Countries.id, Countries.nickname 
-    FROM User INNER JOIN Countries ON Countries.id=User.country_id WHERE User.username=? AND User.password=?'''
-    # (id, username, password, age, countryName, countryId, countryNickname)
-    user = cur.execute(findUserSql, (username, password,)).fetchall()
-    # todo revisar que se regresa a unity
-
-    if not user:
-        return JsonResponse({"error": "User not found"})
-    else:
-        # If user exists create session and return session id
-        userId = user[0][0]
-        userUsername = user[0][1]
-        userAge = user[0][2]
-        userCountryName = user[0][3]
-        userCountryId = user[0][4]
-        userCountryNickname = user[0][5]
-
+def authLogin(req):
+    username = req.POST["username"]
+    password = req.POST["password"]
+    authenticatedUsername = authenticate(req, username=username, password=password)
+    if authenticatedUsername is not None:
+        user = CustomUser.objects.get(username=authenticatedUsername)
+        userCountry = Countries.objects.get(pk=user.country.id)
+        login(req, authenticatedUsername)
         dateCreated = datetime.datetime.now().replace(microsecond=0)
-        print('\n\nDateCreated =>', dateCreated, '\n\n')
-        createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
-        cur.execute(createSessionSql, (userId, dateCreated))
-        retrieveSessionSql = '''SELECT id FROM Session WHERE user_id=? AND dateCreated=?;'''
-        session = cur.execute(retrieveSessionSql, (str(userId), dateCreated)).fetchall()
-        mydb.commit()
+        session = Session.objects.create(user_id=user.id, datecreated=dateCreated)
         json = dumps({
-            "user_id": userId,
-            "username": userUsername,
-            "age": userAge,
-            "countryId": userCountryId,
-            "countryName": userCountryName,
-            "countryNickname": userCountryNickname,
-            "session_id": session[0][0]
+            "user_id": user.id,
+            "username": user.username,
+            "age": user.age,
+            "countryId": userCountry.id,
+            "countryName": userCountry.name,
+            "countryNickname": userCountry.nickname,
+            "session_id": session.id
         })
         mydb.close()
         return HttpResponse(json, content_type="text/json-comment-filtered")
