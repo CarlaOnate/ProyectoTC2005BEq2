@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
+from .models import CustomUser, Countries, Session, Download
 from json import loads,dumps
-from django.http import Http404
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 import datetime
 import sqlite3
 import collections
@@ -26,7 +28,7 @@ def topscores_global(request):
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.nickname as Country, 
     Party.total_score, Party.time_played, Party.dateCreated FROM  Party
-    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
+    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country 
     ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL)
     if rows is None:
@@ -48,7 +50,7 @@ def graficaGlobalLevel(level):
 Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, 
 Levels.dateCreated 
 FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
-Countries.id = User.country_id WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
+Countries.id = User.country WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
 LIMIT 10'''
     rows = cur.execute(stringSQL, (level,))
     if rows is None:
@@ -95,7 +97,6 @@ def user_level(level, usuario):
     })
 
 def user_sessions(usuario):
-    # usuario = request.GET['user_id']
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT SUM(time_played) AS total, date FROM Session WHERE Session.user_id = ?
@@ -106,15 +107,15 @@ def user_sessions(usuario):
     else:
         lista_salida = [['Date', 'Time (s)']]
         for r in rows:
-            date = datetime.datetime.strptime(r[1], "%Y-%m-%d").strftime("%A %d. %b")
-            d = [date, r[0]]
-            lista_salida.append(d)
+            if r[0] is not None and r[1] is not None:
+                date = datetime.datetime.strptime(r[1], "%Y-%m-%d").strftime("%A %d. %b")
+                d = [date, r[0]]
+                lista_salida.append(d)
         j = dumps(lista_salida)
     mydb.close()
     return j
 
 def user_topscores(usuario):
-    # usuario = request.GET['user_id']
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.name as Country, 
@@ -184,11 +185,13 @@ def stats(req):
     })
 
 def myStats(req):
-    topscores = user_topscores(1) # seria pasar el req.user
-    sessions = user_sessions(1) # seria pasar el req.user
-    level1 = user_level(1, 1) # seria pasar el req.user
-    level2 = user_level(2, 1) # seria pasar el req.user
-    level3 = user_level(3, 1) # seria pasar el req.user
+    user = CustomUser.objects.get(username=req.user)
+    id = user.id
+    topscores = user_topscores(id) # seria pasar el req.user
+    sessions = user_sessions(id) # seria pasar el req.user
+    level1 = user_level(1, id) # seria pasar el req.user
+    level2 = user_level(2, id) # seria pasar el req.user
+    level3 = user_level(3, id) # seria pasar el req.user
     print('\n\n topscores =>', topscores, '\n\n')
     print('\n\n sessions =>', sessions, '\n\n')
     print('\n\n level =>', level1, '\n\n')
@@ -219,6 +222,9 @@ def thankyou(request):
 def signup(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
+    allUsernames = list(CustomUser.objects.all().values_list('username', flat=True))
+
+    print('\n\n allUsernames =>', allUsernames, allUsernames[0], '\n\n')
 
     findUserSql = '''SELECT * From Countries'''
     countries = cur.execute(findUserSql).fetchall()
@@ -227,7 +233,7 @@ def signup(req):
         countriesArr.append(el[2])
     countriesJson = dumps(countriesArr)
     mydb.close()
-    return render(req, 'web/signup.html', {"countries": countriesJson})
+    return render(req, 'web/signup.html', {"countries": countriesJson, "usernames": allUsernames})
 
 # ------ AUTH ---------
 def authLogin(req):
@@ -235,46 +241,18 @@ def authLogin(req):
     password = req.POST["password"]
     print('\n\n', username, password, '\n\n')
 
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    # Find user with that username and password
-    findUserSql = '''SELECT User.id, User.username, User.age, Countries.name, Countries.id, Countries.nickname 
-    FROM User INNER JOIN Countries ON Countries.id=User.country_id WHERE User.username=? AND User.password=?'''
-    # (id, username, password, age, countryName, countryId, countryNickname)
-    user = cur.execute(findUserSql, (username, password)).fetchall()
-    userId = user[0][0]
-    userUsername = user[0][1]
-    userAge = user[0][2]
-    userCountryName = user[0][3]
-    userCountryId = user[0][4]
-    userCountryNickname = user[0][5]
+    authenticatedUsername = authenticate(req, username=username, password=password)
 
-    mydb.close()
-
-    if (user is None):
-        return Http404("No se encontró ese usuario")
-    else:
-        # If user exists create session and return session id
+    if authenticatedUsername is not None:
+        user = CustomUser.objects.get(username=authenticatedUsername)
+        login(req, authenticatedUsername)
+        print('\n\n req.user after login =>', req.user, '\n\n')
         dateCreated = datetime.datetime.now().replace(microsecond=0)
-        createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
-        cur.execute(createSessionSql, (userId, dateCreated))
-        retrieveSessionSql = '''SELECT id FROM Session WHERE user_id=? AND dateCreated=?;'''
-        session = cur.execute(retrieveSessionSql, (str(userId), dateCreated)).fetchall()
-        mydb.commit()
-        json = dumps({
-            "user": {
-                "id": userId,
-                "username": userUsername,
-                "age": userAge,
-                "countryId": userCountryId,
-                "countryName": userCountryName,
-                "countryNickname": userCountryNickname,
-            },
-            "session": {
-                "id": session[0][0]
-            }
-        })
+        print('\n\n dateCreated =>', dateCreated, '\n\n')
+        session = Session.objects.create(user_id=user.id, datecreated=dateCreated)
         return redirect('dashboard')
+    else:
+        return render(req, 'web/login.html', {"error": "Datos incorrectos"})
 
 
 def authSignup(req):
@@ -283,26 +261,16 @@ def authSignup(req):
     password = req.POST["password"]
     country = req.POST["country"]
 
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-
-    countrySql = '''SELECT id FROM Countries WHERE name=?;'''
-    countryId = cur.execute(countrySql, (country,)).fetchall()
-
-    stringSQL = '''INSERT INTO User (username, country_id, password, age) VALUES (?, ?, ?, ?)'''
-    cur.execute(stringSQL, (username,  countryId[0][0], password, age))
-    retrieveUserSql = '''SELECT id FROM User WHERE username=? AND password=?'''
-    user = cur.execute(retrieveUserSql, (username, password)).fetchall()
-    mydb.commit()
-    mydb.close()
+    countryInstance = Countries.objects.get(name=country)
+    user = CustomUser.objects.create_user(username=username, country=countryInstance, password=password, age=age)
+    user.save()
     return redirect('thankyou')
 
-# @login_required # todo
+# @login_required
 def updateUser(req):
-    # id = req.POST["id"] # todo: se saca de req.user
-    id = "1"
+    user = CustomUser.objects.get(username=req.user)
+    id = user.id
     username = req.POST["username"]
-    # User needs to be logged in -> missing logic
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
@@ -346,3 +314,12 @@ def authLogout(req):
     mydb.close()
 
     return redirect('/')
+
+# --- API ---
+@login_required
+def addDownload(req):
+    device = req.META.get('HTTP_USER_AGENT')
+    user = CustomUser.objects.get(username=req.user)
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    Download.objects.create(user_id= user.id, device=device, datecreated=dateCreated)
+    return JsonResponse({"msg": 200})
