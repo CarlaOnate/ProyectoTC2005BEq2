@@ -28,7 +28,7 @@ def topscores_global(request):
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.nickname as Country, 
     Party.total_score, Party.time_played, Party.dateCreated FROM  Party
-    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country 
+    INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
     ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL)
     if rows is None:
@@ -50,7 +50,7 @@ def graficaGlobalLevel(level):
 Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, 
 Levels.dateCreated 
 FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
-Countries.id = User.country WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
+Countries.id = User.country_id WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
 LIMIT 10'''
     rows = cur.execute(stringSQL, (level,))
     if rows is None:
@@ -139,7 +139,7 @@ Party.total_score, Party.time_played, Party.dateCreated FROM  Party
 def user_visits(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''select count (*), dateCreated from Visit where dateCreated = Visit.dateCreated group by dateCreated LIMIT 10;'''
+    stringSQL = '''select COUNT (*), dateCreated from Visit where DATE(dateCreated, 'start of day') = DATE(Visit.dateCreated, 'start of day') group by DATE(dateCreated, 'start of day') LIMIT 10;'''
     rows = cur.execute(stringSQL)
     if rows is None:
         raise Http404("List not available")
