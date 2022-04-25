@@ -28,7 +28,7 @@ def game_party(request):
     mydb.commit()
 
     if rows is None:
-        raise Http404("It was not possible to register party data")
+        return JsonResponse({"error": "It was not possible to register party data"})
     else:
         d = {"msg": "200"}
         j = dumps(d)
@@ -62,7 +62,7 @@ def registerFirstLevel(req):
     mydb.commit()
     mydb.close()
 
-    return JsonResponse({"party_id": partyId})
+    return HttpResponse(dumps({"party_id": partyId}), content_type="text/json-comment-filtered")
 
 @csrf_exempt
 def registerLevel(req):
@@ -83,7 +83,7 @@ def registerLevel(req):
     mydb.commit()
     mydb.close()
 
-    return JsonResponse({"party_id": partyId})
+    return HttpResponse(dumps({"party_id": partyId}), content_type="text/json-comment-filtered")
 
 
 @csrf_exempt
@@ -108,18 +108,13 @@ def authLogin(req):
         dateCreated = datetime.datetime.now().replace(microsecond=0)
         session = Session.objects.create(user_id=user.id, datecreated=dateCreated)
         json = dumps({
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "age": user.age,
-                "countryId": userCountry.id,
-                "countryName": userCountry.name,
-                "countryNickname": userCountry.nickname,
-            },
-            "session": {
-                "id": session.id
-            }
+            "user_id": user.id,
+            "username": user.username,
+            "age": user.age,
+            "countryId": userCountry.id,
+            "countryName": userCountry.name,
+            "countryNickname": userCountry.nickname,
+            "session_id": session.id
         })
-        return JsonResponse(json, safe=False)
-    else:
-        return JsonResponse({"error": "Algo salió mal, upsi"})
+        mydb.close()
+        return HttpResponse(json, content_type="text/json-comment-filtered")
