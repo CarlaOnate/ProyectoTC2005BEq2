@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from json import loads,dumps
+from json import loads, dumps
 from django.http import Http404
 import datetime
 import sqlite3
@@ -26,7 +26,7 @@ def game_party(request):
     mydb.commit()
 
     if rows is None:
-        raise Http404("It was not possible to register party data")
+        return JsonResponse({"error": "It was not possible to register party data"})
     else:
         d = {"msg": "200"}
         j = dumps(d)
@@ -60,7 +60,7 @@ def registerFirstLevel(req):
     mydb.commit()
     mydb.close()
 
-    return JsonResponse({"party_id": partyId})
+    return HttpResponse(dumps({"party_id": partyId}), content_type="text/json-comment-filtered")
 
 @csrf_exempt
 def registerLevel(req):
@@ -81,7 +81,7 @@ def registerLevel(req):
     mydb.commit()
     mydb.close()
 
-    return JsonResponse({"party_id": partyId})
+    return HttpResponse(dumps({"party_id": partyId}), content_type="text/json-comment-filtered")
 
 
 @csrf_exempt
@@ -96,28 +96,34 @@ def level(req):
 
 @csrf_exempt
 def login(req):
-    username = req.POST["username"]
-    password = req.POST["password"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    username = body["username"]
+    password = body["password"]
     print('\n\n', username, password, '\n\n')
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
+
     # Find user with that username and password
     findUserSql = '''SELECT User.id, User.username, User.age, Countries.name, Countries.id, Countries.nickname 
     FROM User INNER JOIN Countries ON Countries.id=User.country_id WHERE User.username=? AND User.password=?'''
     # (id, username, password, age, countryName, countryId, countryNickname)
-    user = cur.execute(findUserSql, (username, password)).fetchall()
-    userId = user[0][0]
-    userUsername = user[0][1]
-    userAge = user[0][2]
-    userCountryName = user[0][3]
-    userCountryId = user[0][4]
-    userCountryNickname = user[0][5]
+    user = cur.execute(findUserSql, (username, password,)).fetchall()
+    # todo revisar que se regresa a unity
 
-    if (user is None):
-        return Http404("No se encontró ese usuario")
+    if not user:
+        return JsonResponse({"error": "User not found"})
     else:
         # If user exists create session and return session id
+        userId = user[0][0]
+        userUsername = user[0][1]
+        userAge = user[0][2]
+        userCountryName = user[0][3]
+        userCountryId = user[0][4]
+        userCountryNickname = user[0][5]
+
         dateCreated = datetime.datetime.now().replace(microsecond=0)
         print('\n\nDateCreated =>', dateCreated, '\n\n')
         createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
@@ -126,17 +132,13 @@ def login(req):
         session = cur.execute(retrieveSessionSql, (str(userId), dateCreated)).fetchall()
         mydb.commit()
         json = dumps({
-            "user": {
-                "id": userId,
-                "username": userUsername,
-                "age": userAge,
-                "countryId": userCountryId,
-                "countryName": userCountryName,
-                "countryNickname": userCountryNickname,
-            },
-            "session": {
-                "id": session[0][0]
-            }
+            "user_id": userId,
+            "username": userUsername,
+            "age": userAge,
+            "countryId": userCountryId,
+            "countryName": userCountryName,
+            "countryNickname": userCountryNickname,
+            "session_id": session[0][0]
         })
         mydb.close()
-        return JsonResponse(json, safe=False)
+        return HttpResponse(json, content_type="text/json-comment-filtered")
