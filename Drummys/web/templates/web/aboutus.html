@@ -1,4 +1,14 @@
 {% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #aboutus{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <section id="about-us">
  <div class="box-about-us">

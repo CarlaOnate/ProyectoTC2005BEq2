@@ -1,4 +1,14 @@
 {% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #login{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <section id="signup">
   <div>

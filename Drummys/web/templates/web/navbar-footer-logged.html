@@ -1,0 +1,21 @@
+{% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+
+    <div>
+        <a href="{% url 'index' %}"><img class="navbar-imgs" src="{% static 'assets/drummy.png' %}"/></a>
+    </div>
+
+    {% block navbar-extension %}
+
+    <div>
+        <p><a id="home" href="{% url 'index' %}" class="black">Home</a></p>
+        <p><a id="download" href="{% url 'download-logged' %}" class="black">Download</a></p>
+        <p><a id="stats-navbar" href="{% url 'myStats' %}"  class="black">Stats</a></p>
+        <p><a id="aboutus" href="{% url 'profile' %}" class="black">About us</a></p>
+        <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
+    </div> 
+
+    {% endblock %}
+
+{% endblock %}

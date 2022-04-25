@@ -1,4 +1,14 @@
 {% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #download{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <section id="download_main">
     <div id="dl_info">
@@ -45,4 +55,8 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}

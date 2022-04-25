@@ -216,6 +216,9 @@ def download_logged(request):
 def thankyou(request):
     return render(request, 'web/thankyou.html')
 
+def login(request):
+    return render(request, 'web/login.html')
+
 def signup(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
