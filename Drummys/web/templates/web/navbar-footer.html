@@ -28,7 +28,7 @@
                 <p><a id="stats-navbar" href="{% url 'stats' %}"  class="black">Stats</a></p>
                 <p><a id="aboutus" href="{% url 'aboutus' %}" class="black">About us</a></p>
                 {% block navbar-extension %} 
-                    <p><a id="login" href="{% url 'login' %}" class="black">Login</a></p> 
+                    <p><a id="login" href="{% url 'login' %}" class="black">Log In</a></p> 
                 {% endblock %}
                 <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
             </div> 
@@ -39,18 +39,20 @@
     {% endblock %}
     <div id="footer">
         {% block footer %} 
+
         <section id="footer-main">
             <div class="footer-main-top">
               <div class="text-box">
                 <h1>Download the Game</h1>
                 <h2>Try this game for yourself!</h2>
               </div>
-              <button type="button" name="Download">Download the Game</button>
+              <button type="button" name="Download"><a href="{% url 'download' %}">Download the Game</a></button>
               <img src="{% static 'assets/drummy.png' %}">
             </div>
             <div class="footer-main-bottom">
             </div>
           </section>
+   
         {% endblock %}
 
     </div>

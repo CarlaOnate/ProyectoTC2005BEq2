@@ -12,7 +12,7 @@
 {% block content %}
 <section id="signup">
   <div>
-    <h2>Login</h2>
+    <h2>Log In</h2>
     <p class="light-text">Login to your account to see your personal stats. To play the game you must have an account.</p>
   </div>
   <form method="POST" action="http://127.0.0.1:8000/user/login">
@@ -33,7 +33,11 @@
   </form>
   <div>
     <p>You don't have an account? Create one here!</p>
-    <a href="signup.html"><button class="button-outline-orange button-small">Signup</button></a>
+    <a href="{% url 'signup' %}"><button class="button-outline-orange button-small">Sign Up</button></a>
   </div>
 </section>
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}

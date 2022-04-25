@@ -219,6 +219,12 @@ def thankyou(request):
 def login(request):
     return render(request, 'web/login.html')
 
+def profile(request):
+    return render(request, 'web/profile.html')
+
+def myStats(request):
+    return render(request, 'web/my-stats.html')
+
 def signup(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
