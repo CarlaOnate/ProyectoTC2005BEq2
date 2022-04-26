@@ -102,7 +102,7 @@ def user_level(level, usuario):
 def user_sessions(usuario):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''SELECT SUM(time_played) AS total, date FROM Session WHERE Session.user_id = ?
+    stringSQL = '''SELECT SUM(time_played) AS total, date FROM Session WHERE Session.user_id = ? AND Session.date
     Group by date Order by time_played asc'''
     rows = cur.execute(stringSQL, (usuario,))
     if rows is None:
@@ -111,7 +111,7 @@ def user_sessions(usuario):
         lista_salida = [['Date', 'Time (s)']]
         for r in rows:
             if r[0] is not None and r[1] is not None:
-                date = datetime.datetime.strptime(r[1], "%Y-%m-%d").strftime("%A %d. %b")
+                date = datetime.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
                 d = [date, r[0]]
                 lista_salida.append(d)
         j = dumps(lista_salida)
