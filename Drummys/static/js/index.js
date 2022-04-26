@@ -42,7 +42,7 @@ function editUsername () {
     $("#edit-button").hide();
     $("#username-text").hide();
     $("#save-button").show();
-    $("#username-text-div").append(`<input value=${localStorage.username} id="username-input" onchange="handleInputChange()"/>`)
+    $("#username-text-div").append(`<input value="${localStorage.username}" id="username-input" onchange="handleInputChange()"/>`)
     $("#username-text-div").append('<button id="save-button" class="button-filled-green" onclick="saveUsername()">Save</button>')
 }
 
@@ -52,6 +52,11 @@ function saveUsername () {
     $("#username-text").text(localStorage.username)
     $("#username-text").show();
     $("#edit-button").show();
+    var xhttp = new XMLHttpRequest();
+    form = new FormData();
+    form.append( 'username', localStorage.username );
+    xhttp.open('POST', "user/updateUser", true);
+    xhttp.send(form);
 }
 
 function handleInputChange () {

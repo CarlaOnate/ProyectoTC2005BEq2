@@ -2,7 +2,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from json import loads,dumps
 from web.models import CustomUser, Countries, Session
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 import datetime
 import sqlite3
@@ -123,3 +124,25 @@ def authLogin(req):
         return JsonResponse(json, safe=False)
     else:
         return JsonResponse({"error": "Algo salió mal, upsi"})
+
+
+@login_required
+def authLogout(req):
+    id = req.user.id  # todo: se sacaría de req.user
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    retrieveSessionSql = '''SELECT id, dateCreated FROM Session WHERE user_id=? AND date IS NULL AND time_played IS NULL;'''
+    session = cur.execute(retrieveSessionSql, (id)).fetchall()
+
+    date = datetime.datetime.now().replace(microsecond=0)
+    dateCreated = datetime.datetime.strptime(session[0][1], "%Y-%m-%d %H:%M:%S")
+    timePlayed = int((date - dateCreated).total_seconds())
+    endSession = '''UPDATE Session SET date = ?, time_played = ? where id = ?'''
+    cur.execute(endSession, (date, timePlayed, session[0][0]))
+    mydb.commit()
+    mydb.close()
+
+    logout(req)
+
+    return HttpResponse(dumps({"msg": "Goodbye!"}))
