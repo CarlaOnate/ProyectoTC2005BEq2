@@ -4,6 +4,13 @@ google.charts.load('current', {'packages':['bar']});
 google.charts.load('current', {'packages':['corechart']});
 google.charts.load('current', {'packages':['table']});
 let countries = [];
+let usernames = [];
+
+function onDownload () {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/api/download", true);
+    request.send()
+}
 
 function checkSamePassword () {
     const password = document.getElementById("signup-password").value
@@ -16,7 +23,18 @@ function checkSamePassword () {
     }
 }
 
+function checkUsernameAvailable () {
+    const username = document.getElementById("signup-username").value
+    const exists = usernames.some((el) => el === username)
+    if(exists){
+        $("#signup-username-div").append("<p id='error-msg' class='error'>Ese usuario ya existe</p>")
+    } else {
+        $("#error-msg").remove()
+    }
+}
+
 function removeOnChange () {
+    document.getElementById("signup-username").removeEventListener('change', checkUsernameAvailable)
     document.getElementById("confirm-password").removeEventListener('change', checkSamePassword)
 }
 
@@ -24,6 +42,7 @@ $(document).ready(() => {
     $("#save-button").hide();
     document.getElementById("signup-submit").disabled = true;
     document.getElementById("confirm-password").addEventListener('change', checkSamePassword)
+    document.getElementById("signup-username").addEventListener('change', checkUsernameAvailable)
 })
 
 const showSignOutButton = () => {

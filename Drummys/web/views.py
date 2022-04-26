@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
-from .models import CustomUser, Countries, Session
-from json import loads, dumps, loads, load
+from .models import CustomUser, Countries, Session, Download
+from json import loads,dumps
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from .models import CustomUser, Countries, Session
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 import datetime
@@ -98,7 +100,6 @@ def user_level(level, usuario):
     })
 
 def user_sessions(usuario):
-    # usuario = request.GET['user_id']
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT SUM(time_played) AS total, date FROM Session WHERE Session.user_id = ?
@@ -109,15 +110,15 @@ def user_sessions(usuario):
     else:
         lista_salida = [['Date', 'Time (s)']]
         for r in rows:
-            date = datetime.datetime.strptime(r[1], "%Y-%m-%d").strftime("%A %d. %b")
-            d = [date, r[0]]
-            lista_salida.append(d)
+            if r[0] is not None and r[1] is not None:
+                date = datetime.datetime.strptime(r[1], "%Y-%m-%d").strftime("%A %d. %b")
+                d = [date, r[0]]
+                lista_salida.append(d)
         j = dumps(lista_salida)
     mydb.close()
     return j
 
 def user_topscores(usuario):
-    # usuario = request.GET['user_id']
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.name as Country, 
@@ -188,11 +189,13 @@ def stats(req):
 
 @login_required
 def myStats(req):
-    topscores = user_topscores(req) # seria pasar el req.user
-    sessions = user_sessions(req) # seria pasar el req.user
-    level1 = user_level(1, req) # seria pasar el req.user
-    level2 = user_level(2, req) # seria pasar el req.user
-    level3 = user_level(3, req) # seria pasar el req.user
+    user = CustomUser.objects.get(username=req.user)
+    id = user.id
+    topscores = user_topscores(id) # seria pasar el req.user
+    sessions = user_sessions(id) # seria pasar el req.user
+    level1 = user_level(1, id) # seria pasar el req.user
+    level2 = user_level(2, id) # seria pasar el req.user
+    level3 = user_level(3, id) # seria pasar el req.user
     print('\n\n topscores =>', topscores, '\n\n')
     print('\n\n sessions =>', sessions, '\n\n')
     print('\n\n level =>', level1, '\n\n')
@@ -234,6 +237,9 @@ def thankyou(request):
 def signup(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
+    allUsernames = list(CustomUser.objects.all().values_list('username', flat=True))
+
+    print('\n\n allUsernames =>', allUsernames, allUsernames[0], '\n\n')
 
     findUserSql = '''SELECT * From Countries'''
     countries = cur.execute(findUserSql).fetchall()
@@ -242,7 +248,7 @@ def signup(req):
         countriesArr.append(el[2])
     countriesJson = dumps(countriesArr)
     mydb.close()
-    return render(req, 'web/signup.html', {"countries": countriesJson})
+    return render(req, 'web/signup.html', {"countries": countriesJson, "usernames": allUsernames})
 
 # ------ AUTH ---------
 def authLogin(req):
@@ -259,23 +265,9 @@ def authLogin(req):
         dateCreated = datetime.datetime.now().replace(microsecond=0)
         print('\n\n dateCreated =>', dateCreated, '\n\n')
         session = Session.objects.create(user_id=user.id, datecreated=dateCreated)
-        '''json = dumps({
-            "user": {
-                "id": userId,
-                "username": userUsername,
-                "age": userAge,
-                "countryId": userCountryId,
-                "countryName": userCountryName,
-                "countryNickname": userCountryNickname,
-            },
-            "session": {
-                "id": session[0][0]
-            }
-        })'''
         return redirect('dashboard')
     else:
-        # Return an 'invalid login' error message.
-        return Http404("No se encontró ese usuario")
+        return render(req, 'web/login.html', {"error": "Datos incorrectos"})
 
 
 def authSignup(req):
@@ -289,13 +281,10 @@ def authSignup(req):
     user.save()
     return redirect('thankyou')
 
-# @login_required # todo
 @login_required
 @csrf_exempt
 def updateUser(req):
-    #user = CustomUser.objects.get(username=req.user)
     id = req.user.id
-    #username = req.POST["username"]
     username = req.POST["username"]
 
     mydb = sqlite3.connect("DrummyDB.db")
@@ -307,7 +296,7 @@ def updateUser(req):
 
     return JsonResponse({"msg": 200})
 
-# @login_required # todo
+
 @login_required
 def getUser(req):
     id = req.user.id
@@ -321,10 +310,9 @@ def getUser(req):
 
     return JsonResponse({"id": user[0][0], "username": user[0][1], "country": user[0][2], "age": user[0][3]})
 
-# @login_required # todo
 @login_required
 def authLogout(req):
-    id = req.user.id  # todo: se sacaría de req.user
+    id = req.user.id
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
@@ -342,3 +330,12 @@ def authLogout(req):
     logout(req)
 
     return redirect('/')
+
+# --- API ---
+@login_required
+def addDownload(req):
+    device = req.META.get('HTTP_USER_AGENT')
+    user = CustomUser.objects.get(username=req.user)
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    Download.objects.create(user_id= user.id, device=device, datecreated=dateCreated)
+    return JsonResponse({"msg": 200})
