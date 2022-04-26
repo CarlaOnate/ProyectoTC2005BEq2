@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login', TemplateView.as_view(template_name='web/login.html'), name="login"),
     path('signup', views.signup, name='signup'),
-    path('dashboard', TemplateView.as_view(template_name='web/dashboard.html'), name="dashboard"),
+    path('dashboard', views.dashboard, name="dashboard"),
     path('aboutus', views.aboutus, name='aboutus'),
     path('download', views.download, name='download'),
     path('download-logged', views.download_logged, name='download-logged'),

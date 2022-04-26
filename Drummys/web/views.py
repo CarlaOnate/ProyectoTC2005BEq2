@@ -3,8 +3,11 @@ from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomUser, Countries, Session, Download
 from json import loads,dumps
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from .models import CustomUser, Countries, Session
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 import datetime
 import sqlite3
 import collections
@@ -17,7 +20,7 @@ def index(request):
     ip = request.META.get('HTTP_HOST')
     device = request.META.get('HTTP_USER_AGENT')
     stringSQL = '''INSERT INTO Visit (ip, device, dateCreated) VALUES(?, ?, ?)'''
-    cur.execute(stringSQL, (ip, device, dateCreated))
+    cur.execute(stringSQL, (ip, device, dateCreated,))
     mydb.commit()
     mydb.close()
     return render(request, 'web/index.html')
@@ -184,6 +187,7 @@ def stats(req):
         "level3": level3Global,
     })
 
+@login_required
 def myStats(req):
     user = CustomUser.objects.get(username=req.user)
     id = user.id
@@ -207,12 +211,23 @@ def myStats(req):
 def aboutus(request):
     return render(request, 'web/aboutus.html')
 
+@login_required
 def dashboard(request):
-    return render(request, 'web/dashboard.html')
+    id = request.user.id
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    getUserSql = '''SELECT User.id, User.username, Countries.name as Country, User.age FROM User
+        , Countries WHERE User.id = ? AND Countries.id = User.country_id;'''
+    user = cur.execute(getUserSql, (id,)).fetchall()
+    mydb.commit()
+    mydb.close()
+
+    return render(request, 'web/dashboard.html', {"id": user[0][0], "username": user[0][1], "country": user[0][2], "age": user[0][3]})
 
 def download(request):
     return render(request, 'web/download.html')
 
+@login_required
 def download_logged(request):
     return render(request, 'web/download-logged.html')
 
@@ -266,52 +281,53 @@ def authSignup(req):
     user.save()
     return redirect('thankyou')
 
-# @login_required
+@login_required
+@csrf_exempt
 def updateUser(req):
-    user = CustomUser.objects.get(username=req.user)
-    id = user.id
+    id = req.user.id
     username = req.POST["username"]
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     updateUserSql = '''UPDATE User SET username = ? WHERE id=?;'''
-    cur.execute(updateUserSql, (username, id))
+    cur.execute(updateUserSql, (username, id,))
     mydb.commit()
     mydb.close()
 
     return JsonResponse({"msg": 200})
 
-# @login_required # todo
-def getUser(req):
-    # id = req.POST["id"] # todo: se saca de req.user
-    id = "1"
 
+@login_required
+def getUser(req):
+    id = req.user.id
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     getUserSql = '''SELECT User.id, User.username, Countries.name as Country, User.age FROM User
     , Countries WHERE User.id = ? AND Countries.id = User.country_id;'''
-    user = cur.execute(getUserSql, (id)).fetchall()
+    user = cur.execute(getUserSql, (id,)).fetchall()
     mydb.commit()
     mydb.close()
 
     return JsonResponse({"id": user[0][0], "username": user[0][1], "country": user[0][2], "age": user[0][3]})
 
-# @login_required # todo
+@login_required
 def authLogout(req):
-    id = "1" # todo: se sacaría de req.user
+    id = req.user.id
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
     retrieveSessionSql = '''SELECT id, dateCreated FROM Session WHERE user_id=? AND date IS NULL AND time_played IS NULL;'''
-    session = cur.execute(retrieveSessionSql, (id)).fetchall()
+    session = cur.execute(retrieveSessionSql, (id,)).fetchall()
 
     date = datetime.datetime.now().replace(microsecond=0)
     dateCreated = datetime.datetime.strptime(session[0][1], "%Y-%m-%d %H:%M:%S")
     timePlayed = int((date - dateCreated).total_seconds())
     endSession = '''UPDATE Session SET date = ?, time_played = ? where id = ?'''
-    cur.execute(endSession, (date, timePlayed, session[0][0]))
+    cur.execute(endSession, (date, timePlayed, session[0][0],))
     mydb.commit()
     mydb.close()
+
+    logout(req)
 
     return redirect('/')
 
