@@ -35,7 +35,6 @@ class Levels(models.Model):
     user_id = models.IntegerField(blank=True, null=True)
     party_id = models.IntegerField(blank=True, null=True)
     difficulty = models.IntegerField(blank=True, null=True)
-    played_audio = models.IntegerField(blank=True, null=True)
     final_time = models.IntegerField(blank=True, null=True)
     penalties = models.IntegerField(blank=True, null=True)
     datecreated = models.TextField(db_column='dateCreated', blank=True, null=True)  # Field name made lowercase.
@@ -48,7 +47,6 @@ class Party(models.Model):
     user_id = models.IntegerField(blank=True, null=True)
     session_id = models.IntegerField(blank=True, null=True)
     total_score = models.IntegerField(blank=True, null=True)
-    time_played = models.IntegerField(blank=True, null=True)
     datecreated = models.TextField(db_column='dateCreated', blank=True, null=True)  # Field name made lowercase.
     penalties = models.IntegerField(blank=True, null=True)
 
