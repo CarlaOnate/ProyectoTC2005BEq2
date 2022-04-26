@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomUser, Countries, Session, Download
 from json import loads,dumps
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as loginUser
 from django.contrib.auth.decorators import login_required
 import datetime
 import sqlite3
@@ -254,7 +254,7 @@ def authLogin(req):
 
     if authenticatedUsername is not None:
         user = CustomUser.objects.get(username=authenticatedUsername)
-        login(req, authenticatedUsername)
+        loginUser(req, authenticatedUsername)
         print('\n\n req.user after login =>', req.user, '\n\n')
         dateCreated = datetime.datetime.now().replace(microsecond=0)
         print('\n\n dateCreated =>', dateCreated, '\n\n')
