@@ -1,8 +1,21 @@
 {% extends "web/navbar-footer.html" %}
+
+{% block navbar-extension %}
+{{block.super}}
+<p><a id="signup-navbar" href="{% url 'signup' %}" class="black">Sign Up</a></p>
+
+  <style>
+    #signup-navbar{
+        color: #E76F51;
+    }
+  </style>
+
+{% endblock %}
+
 {% block content %}
 <section id="signup">
   <div>
-    <h2>Signup</h2>
+    <h2>Sign Up</h2>
     <p class="light-text">Create your account. You'll have to answer a simple form to create your account.</p>
   </div>
   <form method="POST" action="http://127.0.0.1:8000/user/signup">
@@ -33,7 +46,7 @@
   </form>
   <div>
     <p>Already have an account? Login here</p>
-    <button class="button-outline-orange button-small"><a href="login.html">Login</a></button>
+    <button class="button-outline-orange button-small"><a href="{% url 'login' %}">Login</a></button>
   </div>
   <script type="text/javascript">
     console.log({{ usernames | safe }})
@@ -41,4 +54,8 @@
     usernames = {{ usernames | safe }}
   </script>
 </section>
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}

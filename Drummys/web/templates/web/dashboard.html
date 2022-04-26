@@ -1,4 +1,14 @@
-{% extends "web/navbar-footer.html" %}
+{% extends "web/navbar-footer-logged.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #dashboard-navbar{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <section id="dashboard">
     <div>

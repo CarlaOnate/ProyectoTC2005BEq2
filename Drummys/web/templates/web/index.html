@@ -1,4 +1,14 @@
 {% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #home{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <section id="banner">
   <div class="banner-container">
@@ -65,19 +75,19 @@
       <p>Find different types of statistics to see the progress of current global scores.</p>
       <div class="scores-container">
         <div class="see-scores">
-          <h3>Top Scores</h3>
+          <a href="{% url 'stats' %}"><h3>Top Scores</h3></a>
           {% load static %}
-          <img src="{% static 'assets/score.png' %}">
+          <a href="{% url 'stats' %}"><img src="{% static 'assets/score.png' %}"></a>
         </div>
         <div class="see-scores">
-          <h3>Level Scores</h3>
+          <a href="{% url 'stats' %}"><h3>Level Scores</h3></a>
           {% load static %}
-          <img src="{% static 'assets/level-up.png' %}">
+          <a href="{% url 'stats' %}"><img src="{% static 'assets/level-up.png' %}"></a>
         </div>
         <div class="see-scores">
-          <h3>Downloads</h3>
+          <a href="{% url 'stats' %}"><h3>Downloads</h3></a>
           {% load static %}
-          <img src="{% static 'assets/download.png' %}">
+          <a href="{% url 'stats' %}"><img src="{% static 'assets/download.png' %}"></a>
         </div>
       </div>
     </div>

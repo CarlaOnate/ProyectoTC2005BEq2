@@ -1,7 +1,15 @@
 {% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #stats-navbar{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
-<p>EL BLOCK SE LLAMA CONTENT Y ESTO LE DICE QUE EN LA PÁGINA DE NAVBAR-FOOTER ESTE BLOQUE REEMPLAZARA EL BLOQUE DENTRO
-DEL HTML PRINCIPAL QUE TENGA ESE NOMBRE</p>
 <section id="stats">
     <div id="stat_description">
         <h1>Stats</h1>
