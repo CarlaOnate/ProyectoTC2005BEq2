@@ -28,11 +28,11 @@
             </div>
         </div>
         <script type="text/javascript">
-            const topscores = {{ topscores | safe }}
-            const sessions = {{ sessions | safe }}
-            const level1 = {{ level1 | safe }}
-            const level2 = {{ level2 | safe }}
-            const level3 = {{ level3 | safe }}
+            topscores = {{ topscores | safe }}
+            sessions = {{ sessions | safe }}
+            level1 = {{ level1 | safe }}
+            level2 = {{ level2 | safe }}
+            level3 = {{ level3 | safe }}
             google.charts.setOnLoadCallback(table);
             google.charts.setOnLoadCallback(lineChart);
             google.charts.setOnLoadCallback(() => horizontalBars(level1, 1));

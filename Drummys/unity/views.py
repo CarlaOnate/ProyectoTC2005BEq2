@@ -16,16 +16,15 @@ def game_party(request):
 
     party_id = body['party_id']
     total_score = body['total_score']
-    time_played = body['time_played']
     penalties = body['penalties']
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
-    stringSQL = '''UPDATE Party SET total_score = ?, time_played = ?, penalties = ? 
+    stringSQL = '''UPDATE Party SET total_score = ?, penalties = ? 
     WHERE Party.id = ?;'''
 
-    rows = cur.execute(stringSQL, (total_score, time_played, penalties, party_id))
+    rows = cur.execute(stringSQL, (total_score, penalties, party_id,))
     mydb.commit()
 
     if rows is None:
@@ -39,12 +38,14 @@ def game_party(request):
 
 @csrf_exempt
 def registerFirstLevel(req):
-    userId = req.POST["user_id"]
-    sessionId = req.POST["session_id"]
-    difficulty = req.POST["difficulty"]
-    playedAudio = req.POST["played_audio"]
-    finalTime = req.POST["final_time"]
-    penalties = req.POST["penalties"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    userId = body["user_id"]
+    sessionId = body["session_id"]
+    difficulty = body["difficulty"]
+    finalTime = body["final_time"]
+    penalties = body["penalties"]
 
     #Since it's first level we need to create the party
     mydb = sqlite3.connect("DrummyDB.db")
@@ -53,13 +54,13 @@ def registerFirstLevel(req):
     dateCreated.replace(microsecond=0)
 
     createPartySql = '''INSERT INTO Party (USER_ID, SESSION_ID, DATECREATED) VALUES (?, ?, ?)'''
-    cur.execute(createPartySql, (userId, sessionId, dateCreated))
+    cur.execute(createPartySql, (userId, sessionId, dateCreated,))
 
     findPartySql = '''SELECT id FROM Party WHERE user_id=? AND session_id=? order by dateCreated DESC'''
-    partyId = cur.execute(findPartySql, (userId, sessionId)).fetchall()[0][0]
+    partyId = cur.execute(findPartySql, (userId, sessionId,)).fetchall()[0][0]
 
-    createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
-    cur.execute(createLevel1Sql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
+    createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    cur.execute(createLevel1Sql, (userId, partyId, difficulty, finalTime, penalties, dateCreated,))
     mydb.commit()
     mydb.close()
 
@@ -67,20 +68,22 @@ def registerFirstLevel(req):
 
 @csrf_exempt
 def registerLevel(req):
-    userId = req.POST["user_id"]
-    partyId = req.POST["party_id"]
-    difficulty = req.POST["difficulty"]
-    playedAudio = req.POST["played_audio"]
-    finalTime = req.POST["final_time"]
-    penalties = req.POST["penalties"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    userId = body["user_id"]
+    partyId = body["party_id"]
+    difficulty = body["difficulty"]
+    finalTime = body["final_time"]
+    penalties = body["penalties"]
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     dateCreated = datetime.datetime.now().replace(microsecond=0)
     dateCreated.replace(microsecond=0)
 
-    createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
-    cur.execute(createLevelSql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
+    createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    cur.execute(createLevelSql, (userId, partyId, difficulty, finalTime, penalties, dateCreated,))
     mydb.commit()
     mydb.close()
 
@@ -89,7 +92,10 @@ def registerLevel(req):
 
 @csrf_exempt
 def level(req):
-    difficulty = req.POST["difficulty"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    difficulty = body["difficulty"]
     if difficulty == "1":
         return registerFirstLevel(req)
     elif (difficulty == "2") | (difficulty == "3"):
@@ -99,8 +105,11 @@ def level(req):
 
 @csrf_exempt
 def authLogin(req):
-    username = req.POST["username"]
-    password = req.POST["password"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    username = body["username"]
+    password = body["password"]
     authenticatedUsername = authenticate(req, username=username, password=password)
     if authenticatedUsername is not None:
         user = CustomUser.objects.get(username=authenticatedUsername)
@@ -128,13 +137,13 @@ def authLogout(req):
     cur = mydb.cursor()
 
     retrieveSessionSql = '''SELECT id, dateCreated FROM Session WHERE user_id=? AND date IS NULL AND time_played IS NULL;'''
-    session = cur.execute(retrieveSessionSql, (id)).fetchall()
+    session = cur.execute(retrieveSessionSql, (id,)).fetchall()
 
     date = datetime.datetime.now().replace(microsecond=0)
     dateCreated = datetime.datetime.strptime(session[0][1], "%Y-%m-%d %H:%M:%S")
     timePlayed = int((date - dateCreated).total_seconds())
     endSession = '''UPDATE Session SET date = ?, time_played = ? where id = ?'''
-    cur.execute(endSession, (date, timePlayed, session[0][0]))
+    cur.execute(endSession, (date, timePlayed, session[0][0],))
     mydb.commit()
     mydb.close()
 

@@ -30,12 +30,12 @@
         </div>
     </div>
     <script type="text/javascript">
-        const visits = {{ visits | safe }}
-        const downloads = {{ downloads | safe }}
-        const topscores = {{ topscores | safe }}
-        const level1 = {{ level1 | safe }}
-        const level2 = {{ level2 | safe }}
-        const level3 = {{ level3 |safe }}
+        visits = {{ visits | safe }}
+        downloads = {{ downloads | safe }}
+        topscores = {{ topscores | safe }}
+        level1 = {{ level1 | safe }}
+        level2 = {{ level2 | safe }}
+        level3 = {{ level3 |safe }}
         google.charts.setOnLoadCallback(visitsChart);
         google.charts.setOnLoadCallback(downloadChart);
         google.charts.setOnLoadCallback(table);
