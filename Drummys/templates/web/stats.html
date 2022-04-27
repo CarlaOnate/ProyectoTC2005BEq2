@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Drummy's Adventures</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+        {% load static %}
+        <link rel="shortcut icon" href="{% static 'assets/drummy.png' %}"/>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+    <body>
+        <div id="navbar">
+            <div>
+                <a href="index">
+                    {% load static %}
+                    <img class="navbar-imgs" src="{% static 'assets/drummy.png' %}"/></a>
+            </div>
+            <div>
+                <p><a href="index" class="black">Home</a></p>
+                <p><a href="download" class="black">Download</a></p>
+                <p><a href="stats" class="orange">Stats</a></p>
+                <p><a href="aboutus" class="black">About us</a></p>
+                <p><a href="login" class="black">Login</a></p>
+                {% load static %}
+                <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
+            </div>
+        </div>
+
+        <section id="stats">
+            <div id="stat_description">
+                <h1>Stats</h1>
+                <p>In this section you'll find the global stats for the game and the website. To see personal stats you'll have to login and see the my stats section.</p>
+            </div>
+            <div id="graphs">
+                
+                <div class="stat_pair">
+                    <div class="gpWtitle"><h2>Top Scores</h2> {% load static %}
+                        <img src="{% static 'assets/stat1.png' %}"></div>
+                    <div class="gpWtitle"><h2>Top Scores (Level 1)</h2>{% load static %}
+                        <img src="{% static 'assets/stat2.png' %}"></div>
+                </div>
+
+                <div class="stat_pair">
+                    <div class="gpWtitle"><h2>Top Scores (Level 2)</h2>{% load static %}
+                        <img src="{% static 'assets/stat3.png' %}"></div>
+                    <div class="gpWtitle"><h2>Top Scores (Level 3)</h2>{% load static %}
+                        <img src="{% static 'assets/stat4.png' %}"></div>
+                </div>
+
+                <div class="stat_pair">
+                    <div class="gpWtitle"><h2>Website visits</h2>{% load static %}
+                        <img src="{% static 'assets/stat5.png' %}"></div>
+                    <div class="gpWtitle"><h2>Downloads by country</h2>{% load static %}
+                        <img src="{% static 'assets/stat6.png' %}"></div>
+                </div>
+
+            </div>
+            
+        </section>
+       
+    </body>
+</html>

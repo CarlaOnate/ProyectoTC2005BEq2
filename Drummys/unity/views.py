@@ -1,140 +1,154 @@
-from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from json import loads,dumps
+from web.models import CustomUser, Countries, Session
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import Http404
 import datetime
 import sqlite3
-
 # Create your views here.
-def index(req):
-    return HttpResponse('<p>Soy Index</p>')
 
 @csrf_exempt
-def signup(req):
-    username = req.POST["username"]
-    age = req.POST["age"]
-    password = req.POST["password"]
-    country = req.POST["country"]
+def game_party(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    party_id = body['party_id']
+    total_score = body['total_score']
+    penalties = body['penalties']
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''INSERT INTO User (username, country_id, password, age) VALUES (?, ?, ?, ?)'''
-    cur.execute(stringSQL, (username, age, password, country,))
-    retrieveUserSql = '''SELECT id FROM User WHERE username=? AND password=?'''
-    user = cur.execute(retrieveUserSql, (username, password)).fetchall()
+
+    stringSQL = '''UPDATE Party SET total_score = ?, penalties = ? 
+    WHERE Party.id = ?;'''
+
+    rows = cur.execute(stringSQL, (total_score, penalties, party_id,))
     mydb.commit()
-    # Todo: Que pasa si algo sale mal? Regresar error
-    return JsonResponse({"user": {"id": user[0][0]}})
 
-@csrf_exempt
-def login(req):
-    username = req.POST["username"]
-    password = req.POST["password"]
-
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    # Find user with that username and password
-    findUserSql = '''SELECT User.id, User.username, User.age, Countries.name, Countries.id, Countries.nickname 
-    FROM User INNER JOIN Countries ON Countries.id=User.country_id WHERE User.username=? AND User.password=?'''
-    # (id, username, password, age, countryName, countryId, countryNickname)
-    user = cur.execute(findUserSql, (username, password)).fetchall()
-    userId = user[0][0]
-    userUsername = user[0][1]
-    userAge = user[0][2]
-    userCountryName = user[0][3]
-    userCountryId = user[0][4]
-    userCountryNickname = user[0][5]
-
-    if (user is None):
-        return Http404("No se encontró ese usuario")
+    if rows is None:
+        return JsonResponse({"error": "It was not possible to register party data"})
     else:
-        # If user exists create session and return session id
-        dateCreated = datetime.datetime.now()
-        createSessionSql = '''INSERT INTO Session (user_id, dateCreated) VALUES (?, ?)'''
-        cur.execute(createSessionSql, (userId, dateCreated))
-        retrieveSessionSql = '''SELECT id FROM Session WHERE user_id=? AND dateCreated=?;'''
-        session = cur.execute(retrieveSessionSql, (str(userId), dateCreated)).fetchall()
-        mydb.commit()
-        return JsonResponse([{
-            "user": {
-                "id": userId,
-                "username": userUsername,
-                "age": userAge,
-                "countryId": userCountryId,
-                "countryName": userCountryName,
-                "countryNickname": userCountryNickname,
-            },
-            "session": {
-                "id": session[0][0]
-            }
-        }], safe=False)
+        d = {"msg": "200"}
+        j = dumps(d)
 
-@csrf_exempt
-def updateUser(req):
-    id = req.POST["id"]
-    username = req.POST["username"]
-    # User needs to be logged in -> missing logic
-
-    mydb = sqlite3.connect("DrummyDB.db")
-    cur = mydb.cursor()
-    updateUserSql = '''UPDATE User SET username = ? WHERE id=?;'''
-    cur.execute(updateUserSql, (username, id))
-    mydb.commit()
-
-    return JsonResponse({"msg": 200})
+    mydb.close()
+    return HttpResponse(j, content_type="text/json-comment-filtered")
 
 @csrf_exempt
 def registerFirstLevel(req):
-    userId = req.POST["user_id"]
-    sessionId = req.POST["session_id"]
-    difficulty = req.POST["difficulty"]
-    playedAudio = req.POST["played_audio"]
-    finalTime = req.POST["final_time"]
-    penalties = req.POST["penalties"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    userId = body["user_id"]
+    sessionId = body["session_id"]
+    difficulty = body["difficulty"]
+    finalTime = body["final_time"]
+    penalties = body["penalties"]
 
     #Since it's first level we need to create the party
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    dateCreated = datetime.datetime.now()
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    dateCreated.replace(microsecond=0)
 
     createPartySql = '''INSERT INTO Party (USER_ID, SESSION_ID, DATECREATED) VALUES (?, ?, ?)'''
-    cur.execute(createPartySql, (userId, sessionId, dateCreated))
+    cur.execute(createPartySql, (userId, sessionId, dateCreated,))
 
     findPartySql = '''SELECT id FROM Party WHERE user_id=? AND session_id=? order by dateCreated DESC'''
-    partyId = cur.execute(findPartySql, (userId, sessionId)).fetchall()[0][0]
+    partyId = cur.execute(findPartySql, (userId, sessionId,)).fetchall()[0][0]
 
-    createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
-    cur.execute(createLevel1Sql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
+    createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    cur.execute(createLevel1Sql, (userId, partyId, difficulty, finalTime, penalties, dateCreated,))
     mydb.commit()
+    mydb.close()
 
-    return JsonResponse({"party_id": partyId})
+    return HttpResponse(dumps({"party_id": partyId}), content_type="text/json-comment-filtered")
 
 @csrf_exempt
 def registerLevel(req):
-    userId = req.POST["user_id"]
-    partyId = req.POST["party_id"]
-    difficulty = req.POST["difficulty"]
-    playedAudio = req.POST["played_audio"]
-    finalTime = req.POST["final_time"]
-    penalties = req.POST["penalties"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    userId = body["user_id"]
+    partyId = body["party_id"]
+    difficulty = body["difficulty"]
+    finalTime = body["final_time"]
+    penalties = body["penalties"]
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    dateCreated = datetime.datetime.now()
+    dateCreated = datetime.datetime.now().replace(microsecond=0)
+    dateCreated.replace(microsecond=0)
 
-    createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, PLAYED_AUDIO, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
-    cur.execute(createLevelSql, (userId, partyId, difficulty, playedAudio, finalTime, penalties, dateCreated))
+    createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    cur.execute(createLevelSql, (userId, partyId, difficulty, finalTime, penalties, dateCreated,))
     mydb.commit()
+    mydb.close()
 
-    return JsonResponse({"party_id": partyId})
+    return HttpResponse(dumps({"party_id": partyId}), content_type="text/json-comment-filtered")
 
 
 @csrf_exempt
 def level(req):
-    difficulty = req.POST["difficulty"]
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    difficulty = body["difficulty"]
     if difficulty == "1":
         return registerFirstLevel(req)
     elif (difficulty == "2") | (difficulty == "3"):
         return registerLevel(req)
     else:
         return JsonResponse({"error": "Numero de dificultad no es valida"})
+
+@csrf_exempt
+def authLogin(req):
+    body_unicode = req.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    username = body["username"]
+    password = body["password"]
+    authenticatedUsername = authenticate(req, username=username, password=password)
+    if authenticatedUsername is not None:
+        user = CustomUser.objects.get(username=authenticatedUsername)
+        userCountry = Countries.objects.get(pk=user.country.id)
+        login(req, authenticatedUsername)
+        dateCreated = datetime.datetime.now().replace(microsecond=0)
+        session = Session.objects.create(user_id=user.id, datecreated=dateCreated)
+        json = dumps({
+            "user_id": user.id,
+            "username": user.username,
+            "age": user.age,
+            "countryId": userCountry.id,
+            "countryName": userCountry.name,
+            "countryNickname": userCountry.nickname,
+            "session_id": session.id
+        })
+        return HttpResponse(json, content_type="text/json-comment-filtered")
+    else:
+        return HttpResponse(dumps({"error": "incorrect user or password"}), content_type="text/json-comment-filtered")
+
+
+@login_required
+@csrf_exempt
+def authLogout(req):
+    id = req.user.id  # todo: se sacaría de req.user
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+
+    retrieveSessionSql = '''SELECT id, dateCreated FROM Session WHERE user_id=? AND date IS NULL AND time_played IS NULL;'''
+    session = cur.execute(retrieveSessionSql, (id,)).fetchall()
+
+    date = datetime.datetime.now().replace(microsecond=0)
+    dateCreated = datetime.datetime.strptime(session[0][1], "%Y-%m-%d %H:%M:%S")
+    timePlayed = int((date - dateCreated).total_seconds())
+    endSession = '''UPDATE Session SET date = ?, time_played = ? where id = ?'''
+    cur.execute(endSession, (date, timePlayed, session[0][0],))
+    mydb.commit()
+    mydb.close()
+
+    logout(req)
+
+    return HttpResponse(dumps({"msg": "Goodbye!"}))

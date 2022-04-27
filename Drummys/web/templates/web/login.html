@@ -1,0 +1,44 @@
+{% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #login{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section id="signup">
+  <div>
+    <h2>Log In</h2>
+    <p class="light-text">Login to your account to see your personal stats. To play the game you must have an account.</p>
+  </div>
+  <form method="POST" action="http://127.0.0.1:8000/user/login">
+    {% csrf_token %}
+    <div id="input-boxes">
+      <div>
+        <label class="bold-text">Username</label>
+        <input placeholder="Username" name="username"/>
+      </div>
+      <div>
+        <label class="bold-text">Password</label>
+        <input placeholder="Password" name="password"/>
+      </div>
+    </div>
+    <div>
+      <button class="button-outline-orange button-small" id="login-button">Login</button></a>
+    </div>
+  </form>
+  <p id="error-msg" class="error">{{ error | safe }}</p>
+  <div>
+    <p>You don't have an account? Create one here!</p>
+    <a href="{% url 'signup' %}"><button class="button-outline-orange button-small">Sign Up</button></a>
+  </div>
+</section>
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

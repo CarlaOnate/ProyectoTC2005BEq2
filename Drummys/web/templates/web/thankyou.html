@@ -1,0 +1,18 @@
+{% extends "web/navbar-footer.html" %}
+{% block content %}
+<section id="thankyou">
+    <div>
+        <h2>Thank you!</h2>
+        <p class="light-text">We have created your account successfully, you'll need it to login to the game.</p>
+    </div>
+    <div>
+        {% load static %}
+        <p><strong>Click here to download the game!</strong></p>
+        <a href="{% static 'download/PostAgregarUsr.cs' %}" type="download"><button onclick="onDownload()" class="button-filled">Download</button></a>
+    </div>
+    <div>
+        <p>Already downloaded the game? Login to your account</p>
+        <a href="login"><button class="button-outline-orange button-small">Login</button></a>
+    </div>
+</section>
+{% endblock %}

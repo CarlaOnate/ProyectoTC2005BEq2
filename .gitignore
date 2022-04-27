@@ -1,6 +1,9 @@
 .idea
 .DS:Store
+/.DS_Store
 .vs
 Drummys/Drummys/__pycache__/
 unity/__pycache__/
 web/__pycache__/
+Drummys/Drummys/__pycache__/urls.cpython-39.pyc
+*.pyc
