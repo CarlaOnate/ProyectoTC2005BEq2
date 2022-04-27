@@ -19,6 +19,12 @@ function onDownload () {
     request.send()
 }
 
+function logout () {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/user/logout", true);
+    request.send()
+}
+
 function checkSamePassword () {
     const password = document.getElementById("signup-password").value
     const confirmPassword = document.getElementById("confirm-password").value
