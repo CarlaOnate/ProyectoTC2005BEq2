@@ -126,11 +126,13 @@ def authLogin(req):
             "countryNickname": userCountry.nickname,
             "session_id": session.id
         })
-        mydb.close()
         return HttpResponse(json, content_type="text/json-comment-filtered")
+    else:
+        return HttpResponse(dumps({"error": "incorrect user or password"}), content_type="text/json-comment-filtered")
 
 
 @login_required
+@csrf_exempt
 def authLogout(req):
     id = req.user.id  # todo: se sacaría de req.user
     mydb = sqlite3.connect("DrummyDB.db")
