@@ -280,7 +280,7 @@ def authSignup(req):
     countryInstance = Countries.objects.get(name=country)
     user = CustomUser.objects.create_user(username=username, country=countryInstance, password=password, age=age)
     user.save()
-    return redirect('thankyou')
+    return redirect('http://20.89.70.3:8000/thankyou')
 
 @login_required
 @csrf_exempt
