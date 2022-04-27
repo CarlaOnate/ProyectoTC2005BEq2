@@ -5,6 +5,13 @@ google.charts.load('current', {'packages':['corechart']});
 google.charts.load('current', {'packages':['table']});
 let countries = [];
 let usernames = [];
+let topscores
+let sessions
+let level1
+let level2
+let level3
+let downloads
+let visits
 
 function onDownload () {
     const request = new XMLHttpRequest();
