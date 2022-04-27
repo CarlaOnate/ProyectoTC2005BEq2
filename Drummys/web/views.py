@@ -270,7 +270,7 @@ def authLogin(req):
     else:
         return render(req, 'web/login.html', {"error": "Datos incorrectos"})
 
-
+@csrf_exempt
 def authSignup(req):
     username = req.POST["username"]
     age = req.POST["age"]
@@ -280,7 +280,7 @@ def authSignup(req):
     countryInstance = Countries.objects.get(name=country)
     user = CustomUser.objects.create_user(username=username, country=countryInstance, password=password, age=age)
     user.save()
-    return redirect('http://20.89.70.3:8000/thankyou')
+    return redirect('thankyou')
 
 @login_required
 @csrf_exempt
