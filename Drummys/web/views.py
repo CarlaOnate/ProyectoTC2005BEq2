@@ -329,7 +329,6 @@ def authLogout(req):
     mydb.close()
 
     logout(req)
-    print('\n\n logout =>', req.user, '\n\n')
 
     return redirect('/')
 
