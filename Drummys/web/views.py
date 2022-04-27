@@ -240,7 +240,7 @@ def signup(req):
     cur = mydb.cursor()
     allUsernames = list(CustomUser.objects.all().values_list('username', flat=True))
 
-    print('\n\n allUsernames =>', allUsernames, allUsernames[0], '\n\n')
+    print('\n\n allUsernames =>', allUsernames, '\n\n')
 
     findUserSql = '''SELECT * From Countries'''
     countries = cur.execute(findUserSql).fetchall()

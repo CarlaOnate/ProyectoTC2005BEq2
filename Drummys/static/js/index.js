@@ -26,7 +26,7 @@ function checkSamePassword () {
         $("#error-msg").remove();
         document.getElementById("signup-submit").disabled = false;
     } else {
-        $("#signup form").append("<p id='error-msg' class='error'>Las contraseñas no coinciden</p>")
+        $("#signup form").append("<p id='error-msg' class='error'>The password doesn't match</p>")
     }
 }
 
@@ -34,7 +34,7 @@ function checkUsernameAvailable () {
     const username = document.getElementById("signup-username").value
     const exists = usernames.some((el) => el === username)
     if(exists){
-        $("#signup-username-div").append("<p id='error-msg' class='error'>Ese usuario ya existe</p>")
+        $("#signup-username-div").append("<p id='error-msg' class='error'>The user already exists</p>")
     } else {
         $("#error-msg").remove()
     }
