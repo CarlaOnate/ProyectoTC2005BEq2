@@ -63,7 +63,7 @@ def registerFirstLevel(req):
     findPartySql = '''SELECT id FROM Party WHERE user_id=? AND session_id=? order by dateCreated DESC'''
     partyId = cur.execute(findPartySql, (userId, sessionId,)).fetchall()[0][0]
 
-    createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?)'''
     cur.execute(createLevel1Sql, (userId, partyId, difficulty, finalT_in_seconds, penalties, dateCreated,))
     mydb.commit()
     mydb.close()
@@ -90,7 +90,7 @@ def registerLevel(req):
     dateCreated = datetime.datetime.now().replace(microsecond=0)
     dateCreated.replace(microsecond=0)
 
-    createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?)'''
     cur.execute(createLevelSql, (userId, partyId, difficulty, finalT_in_seconds, penalties, dateCreated,))
     mydb.commit()
     mydb.close()
