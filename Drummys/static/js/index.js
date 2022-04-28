@@ -104,18 +104,22 @@ $(function() {
 
 // Graphs
 function visitsChart() {
-    const data = google.visualization.arrayToDataTable(visits)
+    const data = google.visualization.arrayToDataTable(visits);
 
     const options = {
         width: 500,
         height: 500,
         chart: {
             title: 'Visits',
-            subtitle: 'Last 10 visits',
+            subtitle: 'All visits to the web page from the last 10 days',
         },
         legend: {
             position: 'none',
         },
+        vAxis: {
+          title: 'Number of visits',
+
+        }
     };
 
     const chart = new google.charts.Bar(document.getElementById('visitsChart'));
@@ -129,7 +133,8 @@ function downloadChart() {
     const options = {
         width: 500,
         height: 500,
-        title: 'Downloads by country'
+        title: 'All our downloads by country'
+
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('downloadChart'));
@@ -153,7 +158,16 @@ function horizontalBars (level, levelNumber) {
                 0: { side: 'top', label: 'Time (s)'}
             }
         },
-        bar: { groupWidth: "90%" }
+        bar: { groupWidth: "90%" },
+        //Se supone que esto cambia el rango max y min que quieres que se vea en la gráfica
+        // como es horizontal, pues es el eje h
+        hAxis: {
+          viewWindow:{
+              max:600,
+              min:0
+          }
+        }
+
     };
 
     var chart = new google.charts.Bar(document.getElementById(`level${levelNumber}`));
@@ -164,8 +178,7 @@ function table () {
     var data = new google.visualization.arrayToDataTable(topscores);
 
     var table = new google.visualization.Table(document.getElementById('table_div'));
-
-    table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+    table.draw(data, {showRowNumber: true, width: '500px', height: '500px'});
 }
 
 function lineChart () {
@@ -174,9 +187,12 @@ function lineChart () {
     var options = {
         width: 500,
         height: 500,
-        title: 'Session Times',
+        title: 'Sessions duration  (s)',
         curveType: 'function',
-        legend: { position: 'none' }
+        legend: { position: 'none' },
+        vAxis: {
+          title: 'Time spent in session (s)',
+        }
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));

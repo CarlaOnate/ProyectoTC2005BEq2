@@ -35,7 +35,7 @@ def topscores_global(request):
     if rows is None:
         raise Http404("user_id does not exist")
     else:
-        lista_salida = [["Username", "Country", "Total Score", "Date"]]
+        lista_salida = [["Username", "Country", "Total Score (s)", "Date"]]
         for r in rows:
             date = datetime.datetime.strptime(r[5], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
             d = [r[2], r[3], r[4], date]
@@ -63,7 +63,7 @@ LIMIT 10'''
             lista_salida.append(d)
         j = dumps(lista_salida)
 
-    title = 'Graph Level ' + str(level)
+    title = 'Top 10 fastest users in level ' + str(level)
     modified_title = dumps(title)
     mydb.close()
     return({
@@ -89,7 +89,7 @@ def user_level(level, usuario):
             d = [date, r[6]]
             lista_salida.append(d)
         j = dumps(lista_salida)
-    title = 'Graph Level ' + str(level)
+    title = 'Your top 10 scores in level  ' + str(level)
     modified_title = dumps(title)
     mydb.close()
     return({
@@ -127,7 +127,7 @@ Party.total_score, Party.dateCreated FROM  Party
     if rows is None:
         raise Http404("user_id does not exist")
     else:
-        lista_salida = [["Username", "Country", "Total Score", "Date"]]
+        lista_salida = [["Username", "Country", "Total Score (s)", "Date"]]
         for r in rows:
             print('\n\n date =>', r[5])
             date = datetime.datetime.strptime(r[5], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
@@ -140,7 +140,9 @@ Party.total_score, Party.dateCreated FROM  Party
 def user_visits(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''select COUNT (*), dateCreated from Visit where DATE(dateCreated, 'start of day') = DATE(Visit.dateCreated, 'start of day') group by DATE(dateCreated, 'start of day') LIMIT 10;'''
+    stringSQL = '''select COUNT (*), dateCreated from Visit where 
+    DATE(dateCreated, 'start of day') = DATE(Visit.dateCreated, 'start of day') 
+    group by DATE(dateCreated, 'start of day') LIMIT 10;'''
     rows = cur.execute(stringSQL)
     if rows is None:
         raise Http404("List not available")

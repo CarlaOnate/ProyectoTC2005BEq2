@@ -1,5 +1,4 @@
 {% extends "web/navbar-footer.html" %}
-
 {% block navbar %}
     {{block.super}}
     <style>
@@ -10,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+
 <section id="stats">
     <div id="stat_description">
         <h1>Stats</h1>
@@ -17,7 +17,8 @@
     </div>
     <div id="graphs">
         <div class="stat_pair">
-            <div id="table_div"></div>
+
+           <div id="table_title">Top 10 fastest users of all time<br> <br><div id="table_div"></div></div>
             <div id="level1"></div>
         </div>
         <div class="stat_pair">
@@ -29,6 +30,7 @@
             <div id="downloadChart"></div>
         </div>
     </div>
+
     <script type="text/javascript">
         visits = {{ visits | safe }}
         downloads = {{ downloads | safe }}
