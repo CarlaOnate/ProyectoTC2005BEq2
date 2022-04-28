@@ -47,7 +47,7 @@ def registerFirstLevel(req):
     finalTime = body["final_time"]
     penalties = body["penalties"]
 
-    finalTime = datetime.datetime.strptime(finalTime, "%M:%S:%f")
+    finalTime = datetime.datetime.strptime(finalTime, "%M:%S:%f").replace(microsecond=0)
     a_timedelta = finalTime - datetime.datetime(1900, 1, 1)
     finalT_in_seconds = a_timedelta.total_seconds()
 
@@ -81,7 +81,7 @@ def registerLevel(req):
     finalTime = body["final_time"]
     penalties = body["penalties"]
 
-    finalTime = datetime.datetime.strptime(finalTime, "%M:%S:%f")
+    finalTime = datetime.datetime.strptime(finalTime, "%M:%S:%f").replace(microsecond=0)
     a_timedelta = finalTime - datetime.datetime(1900, 1, 1)
     finalT_in_seconds = a_timedelta.total_seconds()
 
