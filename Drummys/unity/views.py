@@ -47,6 +47,10 @@ def registerFirstLevel(req):
     finalTime = body["final_time"]
     penalties = body["penalties"]
 
+    finalTime = datetime.datetime.strptime(finalTime, "%M:%S:%f")
+    a_timedelta = finalTime - datetime.datetime(1900, 1, 1)
+    finalT_in_seconds = a_timedelta.total_seconds()
+
     #Since it's first level we need to create the party
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
@@ -60,7 +64,7 @@ def registerFirstLevel(req):
     partyId = cur.execute(findPartySql, (userId, sessionId,)).fetchall()[0][0]
 
     createLevel1Sql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
-    cur.execute(createLevel1Sql, (userId, partyId, difficulty, finalTime, penalties, dateCreated,))
+    cur.execute(createLevel1Sql, (userId, partyId, difficulty, finalT_in_seconds, penalties, dateCreated,))
     mydb.commit()
     mydb.close()
 
@@ -77,13 +81,17 @@ def registerLevel(req):
     finalTime = body["final_time"]
     penalties = body["penalties"]
 
+    finalTime = datetime.datetime.strptime(finalTime, "%M:%S:%f")
+    a_timedelta = finalTime - datetime.datetime(1900, 1, 1)
+    finalT_in_seconds = a_timedelta.total_seconds()
+
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     dateCreated = datetime.datetime.now().replace(microsecond=0)
     dateCreated.replace(microsecond=0)
 
     createLevelSql = '''INSERT INTO Levels (USER_ID, PARTY_ID, DIFFICULTY, FINAL_TIME, PENALTIES, DATECREATED) VALUES (?, ?, ?, ?, ?, ?, ?)'''
-    cur.execute(createLevelSql, (userId, partyId, difficulty, finalTime, penalties, dateCreated,))
+    cur.execute(createLevelSql, (userId, partyId, difficulty, finalT_in_seconds, penalties, dateCreated,))
     mydb.commit()
     mydb.close()
 
