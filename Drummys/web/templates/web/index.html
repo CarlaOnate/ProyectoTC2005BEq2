@@ -13,26 +13,27 @@
 <section id="banner">
   <div class="banner-container">
     {% load static %}
-  <img src="{% static 'assets/controller.jpg' %}" id="controller" />
-  <div class="text-box">
-     <h1>Drummy's Adventures {{ valor }}</h1>
-     <h2>Follow Drummy's <br>Adventures and save your fellow<br> percussionists using your music skills.</h2>
+    <img src="{% static 'assets/diadestello.jpg' %}" id="controller" />
+  <div id="banner-container-div" class="text-box">
+    <div><h1>Drummy's Adventures {{ valor }}</h1></div>
+     <div id="drummy-gif-container"> <img id="drummy-gif" src="{% static 'assets/drummyTocando.gif' %}" /></div>
+     <div><h2>Follow Drummy's <br>Adventures and save your fellow<br> percussionists using your music skills.</h2></div>
   </div>
   </div>
 </section>
 <section id="our-goal">
   <div>
     <h1>Our Goal</h1>
-    <p>This game has the goal to teach everyone who plays it main musical notes of different percussion instruments. As well to raise awarness <br>on the health issues that playing a percussion instrument can have. We provide both a fun and interactive game to play while learning to <br>play notes on different musical instruments. This game is intended to raise awarness on these subjects.</p>
+    <p>This game has the goal to entertain the player while teaching them about percussion instruments, as well as raising awarness on the health issues that playing a percussion instrument can have.  </p>
     <div class="box">
       <div class="sub-box">
         <h3>Gameplay</h3>
-        <p>Drummy is a percussionst player who has to use his drummer's skills to save his fellow comrades. While doing so Drummy can teach them tips to prevent injuries while playing these types of instruments.
+        <p>Drummy is a percussionst player who has to use his drummer's skills to save his friends. While doing so, Drummy can teach you tips to prevent injuries while learning about percussion instruments.
 </p>
       </div>
       <div class="sub-box1">
         <h3>Learning Process</h3>
-        <p>This game teaches the user some of the main perscussion instruments. It also raises awarness on the injuries that can occur from playing any percussion instruments and the main means to avoid them.
+        <p>This game teaches the player some of the main perscussion instruments. It also raises awarness on the injuries that can occur from playing percussion instruments and the main steps to avoid them.
 </p>
       </div>
     </div>
@@ -46,7 +47,7 @@
           <img src="{% static 'assets/escenario.png' %}"></img>
         </div>
         <h2>Levels</h2>
-        <p>The game has three levels, each one more difficult. Drummy has to play the right notes to be able to solve each puzzle. The game shows the main notes of three precussion instruments.</p>
+        <p>The game has three levels, each one more difficult than the previous one. Drummy has to defeat the enemies he encounters in order to advance through each level.</p>
       </div>
       <div class="sub-box">
         <div class="image-container">
@@ -54,7 +55,7 @@
           <img src="{% static 'assets/escenario.png' %}"></img>
         </div>
         <h2>Score</h2>
-        <p>Be the best by saving all your friends the fastest way you can. Drummy has to go through all the levels to finish the game and save all his comrades. The scores of all the players are shown in top scores. Can you be the best?</p>
+        <p>Be the best by saving Drummy's friends the fastest way you can. Drummy has to go through all the levels to finish the game and save his friends. The scores of all the players are shown in top scores. Can you be the best?</p>
       </div>
       <div class="sub-box">
         <div class="image-container">
@@ -62,7 +63,7 @@
           <img src="{% static 'assets/escenario.png' %}"></img>
         </div>
         <h2>Learn</h2>
-        <p>Learn while having some fun. Know some of the main notes of percussion instruments like: ....... Also learn some tips to prevent injuries while playing. See your progress in your personal profile and see how quick you can identify the notes for each instrument.</p>
+        <p>Learn while having some fun.. See your progress in your personal profile and see how quickly you can pass each level.</p>
       </div>
     </div>
 </section>
@@ -92,7 +93,7 @@
       </div>
     </div>
     {% load static %}
-    <img src="{% static 'assets/statsexample.png' %}" id="stats-example">
+    <img src="{% static 'assets/example-stats.png' %}" id="stats-example">
   </div>
 </section>
 {% endblock %}
