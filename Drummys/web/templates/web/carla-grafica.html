@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+    <script>
+        google.charts.load('current', {'packages':['bar']});
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(downloadChartCarla);
+        function downloadChartCarla(){
+            const data = google.visualization.arrayToDataTable({{ downloads | safe }})
+
+            const options = {
+                width: 500,
+                height: 500,
+                title: 'Downloads by country'
+            };
+
+            const chart = new google.visualization.PieChart(document.getElementById('downloadChart-carla'));
+
+            chart.draw(data, options);
+        }
+    </script>
+    <div id="downloadChart-carla"></div>
+</body>
+</html>

@@ -340,3 +340,21 @@ def addDownload(req):
     dateCreated = datetime.datetime.now().replace(microsecond=0)
     Download.objects.create(user_id= user.id, device=device, datecreated=dateCreated)
     return JsonResponse({"msg": 200})
+
+
+# -- ENDPOINT GRÁFICA TAREA --
+def downloadGrafica(req):
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT COUNT(*), Countries.name FROM Download INNER JOIN  User, Countries ON Download.user_id = User.id
+        AND Countries.id = User.country_id GROUP BY Countries.name'''
+    rows = cur.execute(stringSQL)
+    if rows is None:
+        raise Http404("List not available")
+    else:
+        data = [['Country', 'Downloads']]
+        for r in rows:
+            data.append([r[1], r[0]])
+        dataJson = dumps(data)
+    mydb.close()
+    return render(req, 'web/carla-grafica.html', {"downloads": dataJson})
