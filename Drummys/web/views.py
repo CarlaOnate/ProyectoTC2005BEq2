@@ -345,6 +345,6 @@ def addDownload(req):
 
 
 # Gráfica tarea
-def graficatarea(request):
-    topscoresGlobal = topscores_global(request)
-    return render(request, 'web/tareaGrafica.html', {"topscores": topscoresGlobal})
+def graficatarea(req):
+    topscoresGlobal = topscores_global(req)
+    return render(req, 'web/tareaGrafica.html', {"topscores": topscoresGlobal})
