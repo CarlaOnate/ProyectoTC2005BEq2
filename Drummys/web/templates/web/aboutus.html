@@ -1,11 +1,21 @@
 {% extends "web/navbar-footer.html" %}
+
+{% block navbar %}
+    {{block.super}}
+    <style>
+        #aboutus{
+            color: #E76F51;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 <section id="about-us">
  <div class="box-about-us">
     <div class="box-top">
     <div class="text-container">
       <h2>About Us</h2>
-    <p>This project has been done by students of the Tecnológico de Monterrey as a collaboration with PAS (Percurssive Arts Society). We hope this project will teach everyone who plays it a little bit more about percurssion instruments.</p>
+    <p>This project has been developed by students of the Tecnológico de Monterrey, Mexico-City Campus, as a collaboration with Percurssive Arts Society. We hope this project will teach everyone who plays it a little bit more about percurssion instruments.</p>
     </div>
     {% load static %}
     <img src="{%static 'assets/escenario.png'%}" />

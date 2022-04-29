@@ -14,6 +14,7 @@ urlpatterns = [
     path('my-stats', views.myStats, name='myStats'),
     path('thankyou', views.thankyou, name='thankyou'),
     path('stats', views.stats, name='stats'),
+    path('profile', views.profile, name='profile'),
     #  --- API ---
     path('api/download', views.addDownload, name='addDownload'),
     path('user/signup', views.authSignup, name='authSignup'),
