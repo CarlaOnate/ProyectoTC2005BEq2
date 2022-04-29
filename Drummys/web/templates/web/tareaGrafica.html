@@ -1,0 +1,13 @@
+{% block content %}
+<section id="stats">
+    <div id="graphs">
+        <div class="stat_pair">
+            <div id="table_div"></div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const topscores = {{ topscores | safe }}
+        google.charts.setOnLoadCallback(table);
+     </script>
+</section>
+{% endblock %}

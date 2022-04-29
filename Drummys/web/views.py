@@ -339,3 +339,9 @@ def addDownload(req):
     dateCreated = datetime.datetime.now().replace(microsecond=0)
     Download.objects.create(user_id= user.id, device=device, datecreated=dateCreated)
     return JsonResponse({"msg": 200})
+
+
+# Gráfica tarea
+def graficatarea(request):
+    topscoresGlobal = topscores_global(request)
+    return render(request, 'web/tareaGrafica.html', {"topscores": topscoresGlobal})
