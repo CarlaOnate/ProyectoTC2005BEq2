@@ -45,9 +45,9 @@
             level3 = {{ level3 | safe }}
             google.charts.setOnLoadCallback(table);
             google.charts.setOnLoadCallback(lineChart);
-            google.charts.setOnLoadCallback(() => horizontalBars(level1, 1));
-            google.charts.setOnLoadCallback(() => horizontalBars(level2, 2));
-            google.charts.setOnLoadCallback(() => horizontalBars(level3, 3));
+            google.charts.setOnLoadCallback(() => user_horizontalBars(level1, 1));
+            google.charts.setOnLoadCallback(() => user_horizontalBars(level2, 2));
+            google.charts.setOnLoadCallback(() => user_horizontalBars(level3, 3));
         </script>
     </section>
 {% endblock %}

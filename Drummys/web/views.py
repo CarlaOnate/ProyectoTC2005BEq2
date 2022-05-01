@@ -57,9 +57,11 @@ LIMIT 10'''
     if rows is None:
         raise Http404("user_id or level does not exist")
     else:
-        lista_salida = [['Users', 'Time (s)']]
+        lista_salida = []
         for r in rows:
-            d = [r[2], r[6]]
+            fixed_date = datetime.datetime.strptime(r[8], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b %Y")
+            html_tooltip = '''<div style="margin: 10px; text-align: left; font-size: 14px; color: black;">''' + "<b>" + str(fixed_date) + "</b><br>" + '''<p style="color: #858585; font-size: 14px;">Score:</p>''' + '''<p style="color: #4285f4; font-weight: bold; font-size: 16px;">''' + str(r[6]) + "</p>" + "</div>"
+            d = [r[2], r[6], html_tooltip, 'color: #4285f4']
             lista_salida.append(d)
         j = dumps(lista_salida)
 
@@ -81,7 +83,7 @@ def user_level(level, usuario):
     LIMIT 10'''
     rows = cur.execute(stringSQL, (usuario, level, ))
     if rows is None:
-        raise Http404("user_id or level does not exist")
+        raise Http404("user_id does not exist")
     else:
         lista_salida = [['Date', 'Time (s)']]
         for r in rows:
@@ -144,7 +146,7 @@ def user_visits(req):
     DATE(dateCreated, 'start of day') = DATE(Visit.dateCreated, 'start of day') 
     group by DATE(dateCreated, 'start of day') LIMIT 10;'''
     rows = cur.execute(stringSQL)
-    if rows is None:
+    if not rows:
         raise Http404("List not available")
     else:
         data = [['Date', 'Visits']]

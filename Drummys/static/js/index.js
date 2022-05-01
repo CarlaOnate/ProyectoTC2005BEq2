@@ -142,35 +142,90 @@ function downloadChart() {
     chart.draw(data, options);
 }
 
-function horizontalBars (level, levelNumber) {
-    var data = new google.visualization.arrayToDataTable(JSON.parse(level.values));
+function user_horizontalBars (level, levelNumber) {
+    console.log(JSON.parse(level.values));
+    if (JSON.parse(level.values).length <= 1)
+    {
+        document.getElementById(`level${levelNumber}`).innerHTML = "Oops nothing to show yet. <br> You will see a graph here when you start playing!";
+        document.getElementById(`level${levelNumber}`).style.width = "500px";
+        document.getElementById(`level${levelNumber}`).style.height = "500px";
+        document.getElementById(`level${levelNumber}`).style.border = "solid lightgray";
+    }
+    else{
+        document.getElementById(`level${levelNumber}`).style.border = "0";
+        var data = new google.visualization.arrayToDataTable(JSON.parse(level.values));
 
+        var options = {
+            width: 500,
+            height: 500,
+            legend: { position: 'none' },
+            chart: {
+                title: level.title ,
+            },
+            bars: 'horizontal',
+                axes: {
+                x: {
+                    0: { side: 'top', label: 'Time (s)'}
+                }
+            },
+            bar: { groupWidth: "90%" },
+            //Se supone que esto cambia el rango max y min que quieres que se vea en la gráfica
+            // como es horizontal, pues es el eje h
+            hAxis: {
+              viewWindow:{
+                  max:600,
+                  min:0
+              }
+            }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById(`level${levelNumber}`));
+        chart.draw(data, options);
+    }
+
+};
+
+function horizontalBars (level, levelNumber) {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Users');
+    data.addColumn('number', 'Time (s)');
+    data.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows(JSON.parse(level.values));
+
+    //var data = new google.visualization.arrayToDataTable(JSON.parse(level.values));
     var options = {
+        tooltip: {isHtml: true},
         width: 500,
         height: 500,
         legend: { position: 'none' },
-        chart: {
-            title: level.title ,
-        },
-        bars: 'horizontal',
-            axes: {
+        title: level.title,
+        titleTextStyle: {color: '#868686', fontName: 'Roboto', fontSize: 16, bold: false},
+        axes: {
             x: {
                 0: { side: 'top', label: 'Time (s)'}
-            }
-        },
+            }},
         bar: { groupWidth: "90%" },
         //Se supone que esto cambia el rango max y min que quieres que se vea en la gráfica
         // como es horizontal, pues es el eje h
         hAxis: {
+          title: 'Time (s)',
           viewWindow:{
               max:600,
               min:0
-          }
+          },
+          titleTextStyle: {color: '#424242"', fontName: 'Roboto', fontSize: 12},
+          TextStyle: {color: '#858585', fontName: 'Roboto', fontSize: 12}
+        },
+        vAxis: {
+            title: 'Users',
+            titleTextStyle: {color: '#424242"', fontName: 'Roboto', fontSize: 12},
+            TextStyle: {color: '#858585', fontName: 'Roboto', fontSize: 12}
         }
-
     };
 
-    var chart = new google.charts.Bar(document.getElementById(`level${levelNumber}`));
+    var chart = new google.visualization.BarChart(document.getElementById(`level${levelNumber}`));
     chart.draw(data, options);
 }
 
@@ -178,24 +233,34 @@ function table () {
     var data = new google.visualization.arrayToDataTable(topscores);
 
     var table = new google.visualization.Table(document.getElementById('table_div'));
-    table.draw(data, {showRowNumber: true, width: '500px', height: '500px'});
+    table.draw(data, {showRowNumber: true, width: '400px', height: '400px'});
 }
 
 function lineChart () {
-    var data = google.visualization.arrayToDataTable(sessions);
+    if (sessions.length <= 1)
+    {
+        document.getElementById('curve_chart').innerHTML = "Oops nothing to show yet. <br> You will see a graph here when you start playing";
+        document.getElementById('curve_chart').style.width = "500px";
+        document.getElementById('curve_chart').style.height = "500px";
+        document.getElementById('curve_chart').style.border = "solid lightgray";
+    }
+    else{
+        document.getElementById('curve_chart').style.border = "0";
+        var data = google.visualization.arrayToDataTable(sessions);
+        var options = {
+            width: 500,
+            height: 500,
+            title: 'Sessions duration  (s)',
+            curveType: 'function',
+            legend: { position: 'none' },
+            vAxis: {
+              title: 'Time spent in session (s)',
+            }
+        };
 
-    var options = {
-        width: 500,
-        height: 500,
-        title: 'Sessions duration  (s)',
-        curveType: 'function',
-        legend: { position: 'none' },
-        vAxis: {
-          title: 'Time spent in session (s)',
-        }
-    };
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+    }
 
-    chart.draw(data, options);
 }
