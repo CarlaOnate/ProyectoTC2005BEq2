@@ -1007,6 +1007,15 @@ input {
     color: #868686;
 }
 
+.Oops{
+    color: lightgray;
+    width: 500px;
+    height: 500px;
+    border: solid lightgray;
+
+}
+
+
 .gpWtitle {
     display: flex;
     flex-direction: column;
