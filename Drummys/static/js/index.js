@@ -156,10 +156,12 @@ function user_horizontalBars (level, levelNumber) {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Date');
         data.addColumn('number', 'Time (s)');
+        data.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
         data.addColumn({type: 'string', role: 'style'});
         data.addRows(JSON.parse(level.values));
 
         var options = {
+            tooltip: {isHtml: true},
             width: 500,
             height: 500,
             legend: { position: 'none' },

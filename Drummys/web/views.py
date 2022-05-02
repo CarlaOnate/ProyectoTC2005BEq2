@@ -88,7 +88,12 @@ def user_level(level, usuario):
         lista_salida = []
         for r in rows:
             date = datetime.datetime.strptime(r[8], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
-            d = [date, r[6], 'color: #4285f4']
+            fixed_date = datetime.datetime.strptime(r[8], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b %Y")
+            html_tooltip = '''<div style="margin: 10px; text-align: left; font-size: 14px; color: black;">''' + "<b>" + str(
+                fixed_date) + "</b><br>" + '''<p style="color: #858585; font-size: 14px;">Score:</p>''' + '''<p 
+                style="color: #4285f4; font-weight: bold; font-size: 16px;">''' + str(
+                r[6]) + "</p>" + "</div>"
+            d = [date, r[6], html_tooltip, 'color: #4285f4']
             lista_salida.append(d)
         j = dumps(lista_salida)
     title = 'Your top 10 scores in level  ' + str(level)
