@@ -85,10 +85,10 @@ def user_level(level, usuario):
     if rows is None:
         raise Http404("user_id does not exist")
     else:
-        lista_salida = [['Date', 'Time (s)']]
+        lista_salida = []
         for r in rows:
             date = datetime.datetime.strptime(r[8], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
-            d = [date, r[6]]
+            d = [date, r[6], 'color: #4285f4']
             lista_salida.append(d)
         j = dumps(lista_salida)
     title = 'Your top 10 scores in level  ' + str(level)
