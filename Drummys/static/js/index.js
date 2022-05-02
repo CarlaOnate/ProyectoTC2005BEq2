@@ -184,7 +184,7 @@ function user_horizontalBars (level, levelNumber) {
               TextStyle: {color: '#858585', fontName: 'Roboto', fontSize: 12}
             },
             vAxis: {
-                title: 'Users',
+                title: 'Date',
                 titleTextStyle: {color: '#424242"', fontName: 'Roboto', fontSize: 12},
                 TextStyle: {color: '#858585', fontName: 'Roboto', fontSize: 12}
             }
