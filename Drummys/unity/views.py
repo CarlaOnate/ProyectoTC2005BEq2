@@ -142,7 +142,7 @@ def authLogin(req):
 @login_required
 @csrf_exempt
 def authLogout(req):
-    id = req.user.id  # todo: se sacaría de req.user
+    id = req.user.id
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 

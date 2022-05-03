@@ -245,7 +245,7 @@ input {
 #our-goal > div h1 {
   color: #264653;
   font-family: 'Roboto Slab', serif;
-  font-size: 4vw;
+  font-size: 50px;
   margin-top: 3%;
   margin-bottom: 3%;
   font-weight: 500;
@@ -254,7 +254,7 @@ input {
 #our-goal > div p {
   color: #5A6978;
   font-family: 'Roboto Slab', serif;
-  font-size: 1.3vw;
+  font-size: 24px;
   margin-left: 5%;
   margin-right: 5%;
   margin-bottom: 3%;
@@ -262,9 +262,9 @@ input {
 
 #our-goal > div .box {
   display: flex;
-  flex-basis: auto;
-  height: 30vh;
-  widht: 100vw;
+  flex-direction: row;
+  justify-content: space-between;
+
 }
 
 #our-goal > div .box > div {
@@ -272,16 +272,15 @@ input {
   box-shadow: 0 35px 55px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   margin: 2%;
-  font-size: 2vw;
-  flex-basis: auto;
+  font-size: 26px;
   height: 300px;
-  widht: 500px;
+  width: 550px;
   overflow: hidden;
   margin-bottom: 3%;
 }
 
 #our-goal > div .box > div h3 {
-  font-size: 2vw;
+  font-size: 30px;
   font-family: Roboto Slab;
   font-weight: 500;
   color: #264653;
@@ -289,7 +288,7 @@ input {
 }
 
 #our-goal > div .box > div p {
-  font-size: 1.3vw;
+  font-size: 20px;
   text-align: justify;
   text-justify: inter-word;
   color: #343F4B;
@@ -361,6 +360,11 @@ input {
   text-align: justify;
   margin-left: 3%;
   margin-right: 3%;
+}
+
+#banner1 .sub-box a {
+text-decoration: underline;
+color: white;
 }
 
 /* Seccion See the stats */
@@ -512,6 +516,9 @@ input {
   width: 100%;
   height: 40%;
   background-color: rgba(239, 91, 53, 0.83);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
 #footer-download-button-text {
@@ -833,6 +840,7 @@ input {
 
 #how2_play p{
     font-size: 25px;
+    text-align: justify;
 }
 
 #how2_play  h1{
@@ -1048,4 +1056,17 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* License -> Footer */
+#licencia {
+  text-align: center;
+  align-items: center;
+  margin-left: 15%;
+  margin-right: 15%;
+}
+
+#licencia a {
+  text-decoration: underline;
+  color: black;
 }
