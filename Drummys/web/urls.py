@@ -22,6 +22,4 @@ urlpatterns = [
     path('user/updateUser', views.updateUser, name='updateUser'),
     path('user/getUser', views.getUser, name='getUser'),
     path('user/logout', views.authLogout, name='authLogout'),
-    # -- TAREA CARLA --
-    path('download-grafica', views.downloadGrafica, name='downloadGrafica'),
 ]
