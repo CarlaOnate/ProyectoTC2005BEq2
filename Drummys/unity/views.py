@@ -10,6 +10,35 @@ import sqlite3
 # Create your views here.
 
 @csrf_exempt
+def game_party2(request):
+    body_unicode = request.body.decode('utf-8')
+    body = loads(body_unicode)
+
+    party_id = body['party_id']
+    penalties = body['penalties']
+
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    stringSQL = '''SELECT SUM (Levels.final_time) as total FROM Levels WHERE Levels.party_id=?'''
+    total_score = cur.execute(stringSQL, (party_id,)).fetchall()[0][0]
+
+    stringSQL = '''UPDATE Party SET total_score = ?, penalties = ? 
+    WHERE Party.id = ?;'''
+
+    rows = cur.execute(stringSQL, (total_score, penalties, party_id,))
+    mydb.commit()
+
+    if rows is None:
+        return JsonResponse({"error": "It was not possible to register party data"})
+    else:
+        d = {"msg": "200"}
+        j = dumps(d)
+
+    mydb.close()
+    return HttpResponse(j, content_type="text/json-comment-filtered")
+
+
+@csrf_exempt
 def game_party(request):
     body_unicode = request.body.decode('utf-8')
     body = loads(body_unicode)
