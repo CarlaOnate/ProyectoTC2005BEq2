@@ -3,7 +3,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomUser, Countries, Session, Download
 from json import loads,dumps
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as loginUser, logout
+from .models import CustomUser, Countries, Session
 from django.contrib.auth.decorators import login_required
 import datetime
 import sqlite3
@@ -17,7 +18,7 @@ def index(request):
     ip = request.META.get('HTTP_HOST')
     device = request.META.get('HTTP_USER_AGENT')
     stringSQL = '''INSERT INTO Visit (ip, device, dateCreated) VALUES(?, ?, ?)'''
-    cur.execute(stringSQL, (ip, device, dateCreated))
+    cur.execute(stringSQL, (ip, device, dateCreated,))
     mydb.commit()
     mydb.close()
     return render(request, 'web/index.html')
@@ -27,17 +28,17 @@ def topscores_global(request):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.nickname as Country, 
-    Party.total_score, Party.time_played, Party.dateCreated FROM  Party
+    Party.total_score, Party.dateCreated FROM  Party
     INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
     ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL)
     if rows is None:
         raise Http404("user_id does not exist")
     else:
-        lista_salida = [["Username", "Country", "Total Score", "Time Played", "Date"]]
+        lista_salida = [["Username", "Country", "Total Score (s)", "Date"]]
         for r in rows:
-            date = datetime.datetime.strptime(r[6], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
-            d = [r[2], r[3], r[4], r[5], date]
+            date = datetime.datetime.strptime(r[5], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+            d = [r[2], r[3], r[4], date]
             lista_salida.append(d)
         j = dumps(lista_salida)
     mydb.close()
@@ -47,7 +48,7 @@ def graficaGlobalLevel(level):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Levels.id as Lvl_ID, User.id as User_ID,User.username, Countries.name as Country, 
-Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, 
+Party.id as Party_id, Levels.difficulty as level,  Levels.final_time, Levels.penalties, 
 Levels.dateCreated 
 FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
 Countries.id = User.country_id WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
@@ -56,13 +57,15 @@ LIMIT 10'''
     if rows is None:
         raise Http404("user_id or level does not exist")
     else:
-        lista_salida = [['Users', 'Time (s)']]
+        lista_salida = []
         for r in rows:
-            d = [r[2], r[7]]
+            fixed_date = datetime.datetime.strptime(r[8], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b %Y")
+            html_tooltip = '''<div style="margin: 10px; text-align: left; font-size: 14px; color: black;">''' + "<b>" + str(fixed_date) + "</b><br>" + '''<p style="color: #858585; font-size: 14px;">Score:</p>''' + '''<p style="color: #4285f4; font-weight: bold; font-size: 16px;">''' + str(r[6]) + "</p>" + "</div>"
+            d = [r[2], r[6], html_tooltip, 'color: #4285f4']
             lista_salida.append(d)
         j = dumps(lista_salida)
 
-    title = 'Graph Level ' + str(level)
+    title = 'Top 10 fastest users in level ' + str(level)
     modified_title = dumps(title)
     mydb.close()
     return({
@@ -74,21 +77,21 @@ def user_level(level, usuario):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Levels.id as Lvl_ID, User.id as User_ID,User.username, Countries.name as Country, 
-    Party.id as Party_id, Levels.difficulty as level, Levels.played_audio,  Levels.final_time, Levels.penalties, Levels.dateCreated 
+    Party.id as Party_id, Levels.difficulty as level,  Levels.final_time, Levels.penalties, Levels.dateCreated 
     FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
     Countries.id = User.country_id WHERE Levels.user_id = ?  AND Levels.difficulty= ? ORDER BY Levels.final_time  
     LIMIT 10'''
     rows = cur.execute(stringSQL, (usuario, level, ))
     if rows is None:
-        raise Http404("user_id or level does not exist")
+        raise Http404("user_id does not exist")
     else:
         lista_salida = [['Date', 'Time (s)']]
         for r in rows:
-            date = datetime.datetime.strptime(r[9], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
-            d = [date, r[7]]
+            date = datetime.datetime.strptime(r[8], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+            d = [date, r[6]]
             lista_salida.append(d)
         j = dumps(lista_salida)
-    title = 'Graph Level ' + str(level)
+    title = 'Your top 10 scores in level  ' + str(level)
     modified_title = dumps(title)
     mydb.close()
     return({
@@ -99,7 +102,7 @@ def user_level(level, usuario):
 def user_sessions(usuario):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''SELECT SUM(time_played) AS total, date FROM Session WHERE Session.user_id = ?
+    stringSQL = '''SELECT SUM(time_played) AS total, date FROM Session WHERE Session.user_id = ? AND Session.date
     Group by date Order by time_played asc'''
     rows = cur.execute(stringSQL, (usuario,))
     if rows is None:
@@ -108,7 +111,7 @@ def user_sessions(usuario):
         lista_salida = [['Date', 'Time (s)']]
         for r in rows:
             if r[0] is not None and r[1] is not None:
-                date = datetime.datetime.strptime(r[1], "%Y-%m-%d").strftime("%A %d. %b")
+                date = datetime.datetime.strptime(r[1], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
                 d = [date, r[0]]
                 lista_salida.append(d)
         j = dumps(lista_salida)
@@ -119,18 +122,18 @@ def user_topscores(usuario):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.name as Country, 
-Party.total_score, Party.time_played, Party.dateCreated FROM  Party
+Party.total_score, Party.dateCreated FROM  Party
  INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id WHERE Party.user_id = ? 
  ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL, (str(usuario),))
     if rows is None:
         raise Http404("user_id does not exist")
     else:
-        lista_salida = [["Username", "Country", "Total Score", "Time Played", "Date"]]
+        lista_salida = [["Username", "Country", "Total Score (s)", "Date"]]
         for r in rows:
-            print('\n\n date =>', r[6])
-            date = datetime.datetime.strptime(r[6], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
-            d = [r[2], r[3], r[4], r[5], date]
+            print('\n\n date =>', r[5])
+            date = datetime.datetime.strptime(r[5], "%Y-%m-%d %H:%M:%S").strftime("%A %d. %b")
+            d = [r[2], r[3], r[4], date]
             lista_salida.append(d)
         j = dumps(lista_salida)
     mydb.close()
@@ -139,9 +142,11 @@ Party.total_score, Party.time_played, Party.dateCreated FROM  Party
 def user_visits(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
-    stringSQL = '''select COUNT (*), dateCreated from Visit where DATE(dateCreated, 'start of day') = DATE(Visit.dateCreated, 'start of day') group by DATE(dateCreated, 'start of day') LIMIT 10;'''
+    stringSQL = '''select COUNT (*), dateCreated from Visit where 
+    DATE(dateCreated, 'start of day') = DATE(Visit.dateCreated, 'start of day') 
+    group by DATE(dateCreated, 'start of day') LIMIT 10;'''
     rows = cur.execute(stringSQL)
-    if rows is None:
+    if not rows:
         raise Http404("List not available")
     else:
         data = [['Date', 'Visits']]
@@ -184,6 +189,7 @@ def stats(req):
         "level3": level3Global,
     })
 
+@login_required
 def myStats(req):
     user = CustomUser.objects.get(username=req.user)
     id = user.id
@@ -192,9 +198,6 @@ def myStats(req):
     level1 = user_level(1, id) # seria pasar el req.user
     level2 = user_level(2, id) # seria pasar el req.user
     level3 = user_level(3, id) # seria pasar el req.user
-    print('\n\n topscores =>', topscores, '\n\n')
-    print('\n\n sessions =>', sessions, '\n\n')
-    print('\n\n level =>', level1, '\n\n')
     return render(req, 'web/my-stats.html', {
         "topscores": topscores,
         "sessions": sessions,
@@ -207,12 +210,23 @@ def myStats(req):
 def aboutus(request):
     return render(request, 'web/aboutus.html')
 
+@login_required
 def dashboard(request):
-    return render(request, 'web/dashboard.html')
+    id = request.user.id
+    mydb = sqlite3.connect("DrummyDB.db")
+    cur = mydb.cursor()
+    getUserSql = '''SELECT User.id, User.username, Countries.name as Country, User.age FROM User
+        , Countries WHERE User.id = ? AND Countries.id = User.country_id;'''
+    user = cur.execute(getUserSql, (id,)).fetchall()
+    mydb.commit()
+    mydb.close()
+
+    return render(request, 'web/dashboard.html', {"id": user[0][0], "username": user[0][1], "country": user[0][2], "age": user[0][3]})
 
 def download(request):
     return render(request, 'web/download.html')
 
+@login_required
 def download_logged(request):
     return render(request, 'web/download-logged.html')
 
@@ -225,15 +239,12 @@ def login(request):
 def profile(request):
     return render(request, 'web/profile.html')
 
-def myStats(request):
-    return render(request, 'web/my-stats.html')
-
 def signup(req):
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     allUsernames = list(CustomUser.objects.all().values_list('username', flat=True))
 
-    print('\n\n allUsernames =>', allUsernames, allUsernames[0], '\n\n')
+    print('\n\n allUsernames =>', allUsernames, '\n\n')
 
     findUserSql = '''SELECT * From Countries'''
     countries = cur.execute(findUserSql).fetchall()
@@ -254,7 +265,7 @@ def authLogin(req):
 
     if authenticatedUsername is not None:
         user = CustomUser.objects.get(username=authenticatedUsername)
-        login(req, authenticatedUsername)
+        loginUser(req, authenticatedUsername)
         print('\n\n req.user after login =>', req.user, '\n\n')
         dateCreated = datetime.datetime.now().replace(microsecond=0)
         print('\n\n dateCreated =>', dateCreated, '\n\n')
@@ -263,7 +274,7 @@ def authLogin(req):
     else:
         return render(req, 'web/login.html', {"error": "Datos incorrectos"})
 
-
+@csrf_exempt
 def authSignup(req):
     username = req.POST["username"]
     age = req.POST["age"]
@@ -275,52 +286,53 @@ def authSignup(req):
     user.save()
     return redirect('thankyou')
 
-# @login_required
+@login_required
+@csrf_exempt
 def updateUser(req):
-    user = CustomUser.objects.get(username=req.user)
-    id = user.id
+    id = req.user.id
     username = req.POST["username"]
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     updateUserSql = '''UPDATE User SET username = ? WHERE id=?;'''
-    cur.execute(updateUserSql, (username, id))
+    cur.execute(updateUserSql, (username, id,))
     mydb.commit()
     mydb.close()
 
     return JsonResponse({"msg": 200})
 
-# @login_required # todo
-def getUser(req):
-    # id = req.POST["id"] # todo: se saca de req.user
-    id = "1"
 
+@login_required
+def getUser(req):
+    id = req.user.id
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
     getUserSql = '''SELECT User.id, User.username, Countries.name as Country, User.age FROM User
     , Countries WHERE User.id = ? AND Countries.id = User.country_id;'''
-    user = cur.execute(getUserSql, (id)).fetchall()
+    user = cur.execute(getUserSql, (id,)).fetchall()
     mydb.commit()
     mydb.close()
 
     return JsonResponse({"id": user[0][0], "username": user[0][1], "country": user[0][2], "age": user[0][3]})
 
-# @login_required # todo
+@login_required
 def authLogout(req):
-    id = "1" # todo: se sacaría de req.user
+    id = req.user.id
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
 
     retrieveSessionSql = '''SELECT id, dateCreated FROM Session WHERE user_id=? AND date IS NULL AND time_played IS NULL;'''
-    session = cur.execute(retrieveSessionSql, (id)).fetchall()
+    session = cur.execute(retrieveSessionSql, (id,)).fetchall()
 
     date = datetime.datetime.now().replace(microsecond=0)
     dateCreated = datetime.datetime.strptime(session[0][1], "%Y-%m-%d %H:%M:%S")
     timePlayed = int((date - dateCreated).total_seconds())
     endSession = '''UPDATE Session SET date = ?, time_played = ? where id = ?'''
-    cur.execute(endSession, (date, timePlayed, session[0][0]))
+    cur.execute(endSession, (date, timePlayed, session[0][0],))
     mydb.commit()
     mydb.close()
+
+    logout(req)
 
     return redirect('/')
 

@@ -27,7 +27,7 @@
                 <p><a id="download-logged-navbar" href="{% url 'download-logged' %}" class="black">Download</a></p>
                 <p><a id="myStats-navbar" href="{% url 'myStats' %}"  class="black">My Stats</a></p>
                 <p><a id="dashboard-navbar" href="{% url 'dashboard' %}" class="black">Profile</a></p>
-                <p><a id="logout-navbar" href="{% url 'index' %}" class="black">Log Out</a></p>
+                <p><a id="logout-navbar" onclick="logout()" href="{% url 'index' %}" class="black">Log Out</a></p>
                 <img id="navbar-imgs" src="{% static 'assets/drum.png' %}"/>
             </div> 
         {% endblock %}

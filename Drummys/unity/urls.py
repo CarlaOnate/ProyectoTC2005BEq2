@@ -7,5 +7,6 @@ urlpatterns = [
     path('login', views.authLogin, name='game/authLogin'),
     # --- API ---
     path('party', views.game_party, name='game/party'),
-    path('level', views.level, name='level')
+    path('level', views.level, name='level'),
+    path('logout', views.authLogout, name='game/authLogout')
 ]

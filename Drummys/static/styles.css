@@ -1005,6 +1005,25 @@ color: white;
     width: 100%;
 }
 
+.table_title{
+    /* -------- Ajustes para titulo sobre tabla ------ */
+    height: 500px;
+    width: 500px;
+    font-family: Roboto;
+    font-size: 16px;
+    text-align: center;
+    color: #868686;
+}
+
+.Oops{
+    color: lightgray;
+    width: 500px;
+    height: 500px;
+    border: solid lightgray;
+
+}
+
+
 .gpWtitle {
     display: flex;
     flex-direction: column;
