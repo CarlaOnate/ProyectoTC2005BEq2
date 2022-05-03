@@ -15,11 +15,14 @@ def game_party(request):
     body = loads(body_unicode)
 
     party_id = body['party_id']
-    total_score = body['total_score']
-    penalties = body['penalties']
 
     mydb = sqlite3.connect("DrummyDB.db")
     cur = mydb.cursor()
+    stringSQL = '''SELECT SUM (Levels.final_time) as total FROM Levels WHERE Levels.party_id=?'''
+    total_score = cur.execute(stringSQL, (party_id,)).fetchall()[0][0]
+
+    stringSQL = '''SELECT SUM (Levels.penalties) as total FROM Levels WHERE Levels.party_id=?'''
+    penalties = cur.execute(stringSQL, (party_id,)).fetchall()[0][0]
 
     stringSQL = '''UPDATE Party SET total_score = ?, penalties = ? 
     WHERE Party.id = ?;'''
