@@ -1,4 +1,4 @@
-{% extends "web/navbar-footer.html" %}
+{% extends "web/navbar-footer-logged.html" %}
 
 {% block navbar %}
     {{block.super}}
@@ -96,4 +96,8 @@
     <img src="{% static 'assets/example-stats.png' %}" id="stats-example">
   </div>
 </section>
+{% endblock %}
+
+{% block footer-license %}
+
 {% endblock %}
