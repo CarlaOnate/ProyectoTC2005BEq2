@@ -18,35 +18,35 @@
     <h2>Sign Up</h2>
     <p class="light-text">Create your account. You'll have to answer a simple form to create your account.</p>
   </div>
-  <form method="POST" action="http://127.0.0.1:8000/user/signup">
+  <form method="POST" action="user/signup">
     {% csrf_token %}
     <div>
       <div id="signup-username-div">
-        <label class="bold-text">Enter your username</label>
+        <label class="bold-text">Enter your username: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <input required id="signup-username" placeholder="Username" type="text" name="username"/>
       </div>
       <div>
-        <label class="bold-text">How old are you?</label>
+        <label class="bold-text">How old are you?: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <input required placeholder="Age" type="text" name="age"/>
       </div>
       <div>
-        <label for="country-input" class="bold-text">Where are your from?</label>
+        <label for="country-input" class="bold-text">Where are your from?: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <input required id="country-input" type="text" placeholder="Country" name="country"/>
       </div>
       <div>
-        <label class="bold-text">Enter your password</label>
+        <label class="bold-text">Enter your password: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <input required id="signup-password" type="text" placeholder="Password" name="password"/>
       </div>
       <div>
-        <label class="bold-text">Confirm your password</label>
+        <label class="bold-text">Confirm your password: &nbsp;&nbsp;</label>
         <input required id="confirm-password" type="text" placeholder="Confirm password" name="confirmPassword"/>
       </div>
     </div>
-    <button id="signup-submit" type="submit" class="button-filled" onclick="removeOnChange()">Signup</button>
+    <div id="signup-submit-container"><button id="signup-submit" type="submit" class="button-filled" onclick="removeOnChange()">Sign Up</button></div>
   </form>
   <div>
     <p>Already have an account? Login here</p>
-    <button class="button-outline-orange button-small"><a href="{% url 'login' %}">Login</a></button>
+    <a href="{% url 'login' %}"></a><button class="button-outline-orange button-small">Log In</button></a>
   </div>
   <script type="text/javascript">
     console.log({{ usernames | safe }})

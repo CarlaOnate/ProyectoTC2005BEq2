@@ -19,6 +19,12 @@ function onDownload () {
     request.send()
 }
 
+function logout () {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/user/logout", true);
+    request.send()
+}
+
 function checkSamePassword () {
     const password = document.getElementById("signup-password").value
     const confirmPassword = document.getElementById("confirm-password").value
@@ -26,7 +32,7 @@ function checkSamePassword () {
         $("#error-msg").remove();
         document.getElementById("signup-submit").disabled = false;
     } else {
-        $("#signup form").append("<p id='error-msg' class='error'>Las contraseñas no coinciden</p>")
+        $("#signup form").append("<p id='error-msg' class='error'>The password doesn't match</p>")
     }
 }
 
@@ -34,7 +40,7 @@ function checkUsernameAvailable () {
     const username = document.getElementById("signup-username").value
     const exists = usernames.some((el) => el === username)
     if(exists){
-        $("#signup-username-div").append("<p id='error-msg' class='error'>Ese usuario ya existe</p>")
+        $("#signup-username-div").append("<p id='error-msg' class='error'>The user already exists</p>")
     } else {
         $("#error-msg").remove()
     }
@@ -98,18 +104,22 @@ $(function() {
 
 // Graphs
 function visitsChart() {
-    const data = google.visualization.arrayToDataTable(visits)
+    const data = google.visualization.arrayToDataTable(visits);
 
     const options = {
         width: 500,
         height: 500,
         chart: {
             title: 'Visits',
-            subtitle: 'Last 10 visits',
+            subtitle: 'All visits to the web page from the last 10 days',
         },
         legend: {
             position: 'none',
         },
+        vAxis: {
+          title: 'Number of visits',
+
+        }
     };
 
     const chart = new google.charts.Bar(document.getElementById('visitsChart'));
@@ -123,7 +133,8 @@ function downloadChart() {
     const options = {
         width: 500,
         height: 500,
-        title: 'Downloads by country'
+        title: 'All our downloads by country'
+
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('downloadChart'));
@@ -131,26 +142,90 @@ function downloadChart() {
     chart.draw(data, options);
 }
 
-function horizontalBars (level, levelNumber) {
-    var data = new google.visualization.arrayToDataTable(JSON.parse(level.values));
+function user_horizontalBars (level, levelNumber) {
+    console.log(JSON.parse(level.values));
+    if (JSON.parse(level.values).length <= 1)
+    {
+        document.getElementById(`level${levelNumber}`).innerHTML = "Oops nothing to show yet. <br> You will see a graph here when you start playing!";
+        document.getElementById(`level${levelNumber}`).style.width = "500px";
+        document.getElementById(`level${levelNumber}`).style.height = "500px";
+        document.getElementById(`level${levelNumber}`).style.border = "solid lightgray";
+    }
+    else{
+        document.getElementById(`level${levelNumber}`).style.border = "0";
+        var data = new google.visualization.arrayToDataTable(JSON.parse(level.values));
 
+        var options = {
+            width: 500,
+            height: 500,
+            legend: { position: 'none' },
+            chart: {
+                title: level.title ,
+            },
+            bars: 'horizontal',
+                axes: {
+                x: {
+                    0: { side: 'top', label: 'Time (s)'}
+                }
+            },
+            bar: { groupWidth: "90%" },
+            //Se supone que esto cambia el rango max y min que quieres que se vea en la gráfica
+            // como es horizontal, pues es el eje h
+            hAxis: {
+              viewWindow:{
+                  max:600,
+                  min:0
+              }
+            }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById(`level${levelNumber}`));
+        chart.draw(data, options);
+    }
+
+};
+
+function horizontalBars (level, levelNumber) {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Users');
+    data.addColumn('number', 'Time (s)');
+    data.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+    data.addColumn({type: 'string', role: 'style'});
+    data.addRows(JSON.parse(level.values));
+
+    //var data = new google.visualization.arrayToDataTable(JSON.parse(level.values));
     var options = {
+        tooltip: {isHtml: true},
         width: 500,
         height: 500,
         legend: { position: 'none' },
-        chart: {
-            title: level.title ,
-        },
-        bars: 'horizontal',
-            axes: {
+        title: level.title,
+        titleTextStyle: {color: '#868686', fontName: 'Roboto', fontSize: 16, bold: false},
+        axes: {
             x: {
                 0: { side: 'top', label: 'Time (s)'}
-            }
+            }},
+        bar: { groupWidth: "90%" },
+        //Se supone que esto cambia el rango max y min que quieres que se vea en la gráfica
+        // como es horizontal, pues es el eje h
+        hAxis: {
+          title: 'Time (s)',
+          viewWindow:{
+              max:600,
+              min:0
+          },
+          titleTextStyle: {color: '#424242"', fontName: 'Roboto', fontSize: 12},
+          TextStyle: {color: '#858585', fontName: 'Roboto', fontSize: 12}
         },
-        bar: { groupWidth: "90%" }
+        vAxis: {
+            title: 'Users',
+            titleTextStyle: {color: '#424242"', fontName: 'Roboto', fontSize: 12},
+            TextStyle: {color: '#858585', fontName: 'Roboto', fontSize: 12}
+        }
     };
 
-    var chart = new google.charts.Bar(document.getElementById(`level${levelNumber}`));
+    var chart = new google.visualization.BarChart(document.getElementById(`level${levelNumber}`));
     chart.draw(data, options);
 }
 
@@ -158,22 +233,34 @@ function table () {
     var data = new google.visualization.arrayToDataTable(topscores);
 
     var table = new google.visualization.Table(document.getElementById('table_div'));
-
-    table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+    table.draw(data, {showRowNumber: true, width: '400px', height: '400px'});
 }
 
 function lineChart () {
-    var data = google.visualization.arrayToDataTable(sessions);
+    if (sessions.length <= 1)
+    {
+        document.getElementById('curve_chart').innerHTML = "Oops nothing to show yet. <br> You will see a graph here when you start playing";
+        document.getElementById('curve_chart').style.width = "500px";
+        document.getElementById('curve_chart').style.height = "500px";
+        document.getElementById('curve_chart').style.border = "solid lightgray";
+    }
+    else{
+        document.getElementById('curve_chart').style.border = "0";
+        var data = google.visualization.arrayToDataTable(sessions);
+        var options = {
+            width: 500,
+            height: 500,
+            title: 'Sessions duration  (s)',
+            curveType: 'function',
+            legend: { position: 'none' },
+            vAxis: {
+              title: 'Time spent in session (s)',
+            }
+        };
 
-    var options = {
-        width: 500,
-        height: 500,
-        title: 'Session Times',
-        curveType: 'function',
-        legend: { position: 'none' }
-    };
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+    }
 
-    chart.draw(data, options);
 }

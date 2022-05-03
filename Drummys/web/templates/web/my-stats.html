@@ -16,15 +16,25 @@
         </div>
         <div id="graphs">
             <div class="stat_pair">
-                <div id="table_div"></div>
-                <div id="level1"></div>
+                <div class="table_title">Your top 10 total scores from all parties<br> <br><div id="table_div"></div>
+                    <br>Watch your progress through your 10 best parties<br><br>
+                </div>
+                 <div class="table_title"><div id="level1"></div>
+                     <br>Your 10 top scores in level 1<br><br>
+                 </div>
             </div>
             <div class="stat_pair">
-                <div id="level2"></div>
-                <div id="level3"></div>
+                <div class="table_title"><div id="level2"></div>
+                    <br>Your 10 top scores in level 2<br><br>
+                </div>
+                <div class="table_title"><div id="level3"></div>
+                    <br>Your 10 top scores in level 3<br><br>
+                </div>
             </div>
             <div class="stat_pair">
-                <div id="curve_chart"></div>
+                <div class="table_title"><div id="curve_chart"></div>
+                    <br>Check the time you have spent the last 10 times you have started session<br><br>
+                </div>
             </div>
         </div>
         <script type="text/javascript">
@@ -35,9 +45,9 @@
             level3 = {{ level3 | safe }}
             google.charts.setOnLoadCallback(table);
             google.charts.setOnLoadCallback(lineChart);
-            google.charts.setOnLoadCallback(() => horizontalBars(level1, 1));
-            google.charts.setOnLoadCallback(() => horizontalBars(level2, 2));
-            google.charts.setOnLoadCallback(() => horizontalBars(level3, 3));
+            google.charts.setOnLoadCallback(() => user_horizontalBars(level1, 1));
+            google.charts.setOnLoadCallback(() => user_horizontalBars(level2, 2));
+            google.charts.setOnLoadCallback(() => user_horizontalBars(level3, 3));
         </script>
     </section>
 {% endblock %}
