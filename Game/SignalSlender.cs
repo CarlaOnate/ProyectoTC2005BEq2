@@ -6,13 +6,24 @@ using UnityEngine.Events;
 [CreateAssetMenu]
 public class SignalSlender : ScriptableObject
 {
-    public List<SignalListener> listeners = new List<SignalListener>();
+    public List<SignalListener> listeners;
+
+    void Start()
+    {
+        listeners = new List<SignalListener>();
+        
+    }
 
     public void Raise()
     {
-        for(int i=listeners.Count - 1; i >= 0; i--)
+        Debug.Log(listeners.Count);
+        for(int i = listeners.Count - 1; i >= 0; i--)
         {
-            listeners[i].OnSignalRaised();
+            if(listeners[i] != null)
+            {
+                listeners[i].OnSignalRaised();
+            }
+            
         }
     }
 
