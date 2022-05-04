@@ -30,7 +30,7 @@ def topscores_global(request):
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.nickname as Country, 
     Party.total_score, Party.dateCreated FROM  Party
     INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id 
-    ORDER BY Party.total_score LIMIT 10 '''
+    WHERE Party.total_score IS NOT NULL ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL)
     if rows is None:
         raise Http404("user_id does not exist")
@@ -51,7 +51,7 @@ def graficaGlobalLevel(level):
 Party.id as Party_id, Levels.difficulty as level,  Levels.final_time, Levels.penalties, 
 Levels.dateCreated 
 FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
-Countries.id = User.country_id WHERE Levels.difficulty= ? ORDER BY Levels.final_time  
+Countries.id = User.country_id WHERE Levels.difficulty= ? AND Levels.final_time IS NOT NULL ORDER BY Levels.final_time  
 LIMIT 10'''
     rows = cur.execute(stringSQL, (level,))
     if rows is None:
@@ -79,7 +79,7 @@ def user_level(level, usuario):
     stringSQL = '''SELECT Levels.id as Lvl_ID, User.id as User_ID,User.username, Countries.name as Country, 
     Party.id as Party_id, Levels.difficulty as level,  Levels.final_time, Levels.penalties, Levels.dateCreated 
     FROM  Levels INNER JOIN User, Countries, Party ON Levels.user_id = User.id  AND Party.id=Levels.party_id AND 
-    Countries.id = User.country_id WHERE Levels.user_id = ?  AND Levels.difficulty= ? ORDER BY Levels.final_time  
+    Countries.id = User.country_id WHERE Levels.user_id = ? AND Levels.difficulty= ? AND Levels.final_time IS NOT NULL ORDER BY Levels.final_time  
     LIMIT 10'''
     rows = cur.execute(stringSQL, (usuario, level, ))
     if rows is None:
@@ -129,7 +129,7 @@ def user_topscores(usuario):
     stringSQL = '''SELECT Party.id, User.id as User_ID, User.username, Countries.name as Country, 
 Party.total_score, Party.dateCreated FROM  Party
  INNER JOIN User, Countries ON Party.user_id = User.id  AND Countries.id = User.country_id WHERE Party.user_id = ? 
- ORDER BY Party.total_score LIMIT 10 '''
+ AND Party.total_score IS NOT NULL ORDER BY Party.total_score LIMIT 10 '''
     rows = cur.execute(stringSQL, (str(usuario),))
     if rows is None:
         raise Http404("user_id does not exist")
